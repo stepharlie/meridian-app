@@ -20,7 +20,17 @@ const navItems: BottomNavItem[] = [
 ]
 
 export function BottomNav() {
-  const { activeSection, setActiveSection } = useNav()
+  const { activeSection, setActiveSection, navigateToLabs } = useNav()
+
+  const handleNavClick = (id: NavSection) => {
+    // Scroll to top first for smooth transition
+    window.scrollTo({ top: 0, behavior: "smooth" })
+    if (id === "labs") {
+      navigateToLabs()
+    } else {
+      setActiveSection(id)
+    }
+  }
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-50 lg:hidden glass border-t border-border/50 safe-area-pb">
@@ -31,7 +41,7 @@ export function BottomNav() {
           return (
             <button
               key={item.id}
-              onClick={() => setActiveSection(item.id)}
+              onClick={() => handleNavClick(item.id)}
               className={cn(
                 "relative flex flex-col items-center justify-center gap-1 py-2 px-4 rounded-xl min-w-[60px] min-h-[56px] transition-all duration-200",
                 isActive 

@@ -29,6 +29,7 @@ import {
   Pencil,
 } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { useNav } from "../nav-context"
 
 // Types
 type BiomarkerStatus = "optimal" | "watch" | "attention" | "out-of-range"
@@ -568,15 +569,19 @@ function ImprovedRangeBar({
   )
 }
 
-function BiomarkerCard({ 
+const BiomarkerCard = ({ 
   biomarker, 
   onClick,
   onQuickAdd,
+  isHighlighted,
+  cardRef,
 }: { 
   biomarker: Biomarker
   onClick: () => void
   onQuickAdd: () => void
-}) {
+  isHighlighted?: boolean
+  cardRef?: (el: HTMLDivElement | null) => void
+}) => {
   const status = getBiomarkerStatus(biomarker.value, biomarker.clinicalRange, biomarker.optimalRange)
   const trend = getTrendDirection(biomarker.value, biomarker.previousValue)
   const config = statusConfig[status]
@@ -595,11 +600,13 @@ function BiomarkerCard({
 
   return (
     <div
+      ref={cardRef}
       className={cn(
         "relative w-full group p-4 rounded-xl",
-        "bg-card border transition-all duration-200",
+        "bg-card border transition-all duration-500",
         "hover:border-primary/30 hover:shadow-lg",
-        config.borderColor
+        config.borderColor,
+        isHighlighted && "ring-2 ring-primary ring-offset-2 ring-offset-background animate-pulse"
       )}
     >
       {/* Quick add button */}
@@ -1478,12 +1485,15 @@ function EmptyState({ onAddLabs, onUploadPdf }: { onAddLabs: () => void; onUploa
 
 // Main Labs Page Component
 export function LabsPage() {
+  const { targetBiomarkerId, clearTargetBiomarker } = useNav()
+  
   const [searchQuery, setSearchQuery] = useState("")
   const [selectedCategory, setSelectedCategory] = useState<BiomarkerCategory | "all">("all")
   const [selectedStatus, setSelectedStatus] = useState<BiomarkerStatus | "all">("all")
   const [selectedBiomarker, setSelectedBiomarker] = useState<Biomarker | null>(null)
   const [showFilters, setShowFilters] = useState(false)
   const [showAllInsights, setShowAllInsights] = useState(false)
+  const [highlightedBiomarkerId, setHighlightedBiomarkerId] = useState<string | null>(null)
   
   // Modal states
   const [showAddLabsModal, setShowAddLabsModal] = useState(false)
@@ -1501,6 +1511,7 @@ export function LabsPage() {
 
   // Refs for scrolling
   const biomarkersGridRef = useRef<HTMLDivElement>(null)
+  const biomarkerRefs = useRef<Record<string, HTMLDivElement | null>>({})
 
   // Load data from localStorage on mount
   useEffect(() => {
@@ -1515,6 +1526,29 @@ export function LabsPage() {
     }
     setIsLoaded(true)
   }, [])
+
+  // Scroll to top when Labs page mounts
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" })
+  }, [])
+
+  // Handle scrolling to target biomarker from navigation
+  useEffect(() => {
+    if (targetBiomarkerId && isLoaded) {
+      // Small delay to ensure DOM is ready and scroll to top completed
+      const timer = setTimeout(() => {
+        const element = biomarkerRefs.current[targetBiomarkerId]
+        if (element) {
+          element.scrollIntoView({ behavior: "smooth", block: "center" })
+          setHighlightedBiomarkerId(targetBiomarkerId)
+          // Clear highlight after animation
+          setTimeout(() => setHighlightedBiomarkerId(null), 2500)
+        }
+        clearTargetBiomarker()
+      }, 400)
+      return () => clearTimeout(timer)
+    }
+  }, [targetBiomarkerId, isLoaded, clearTargetBiomarker])
 
   // Save to localStorage when userEntries changes
   useEffect(() => {
@@ -1947,6 +1981,8 @@ export function LabsPage() {
             biomarker={biomarker}
             onClick={() => setSelectedBiomarker(biomarker)}
             onQuickAdd={() => handleQuickAdd(biomarker.id)}
+            isHighlighted={highlightedBiomarkerId === biomarker.id}
+            cardRef={(el) => { biomarkerRefs.current[biomarker.id] = el }}
           />
         ))}
       </div>

@@ -56,21 +56,25 @@ export function MorningSignal({ userName = "Stephanie" }: { userName?: string })
   const [activeTab, setActiveTab] = useState("recovery")
   const [timeGreeting, setTimeGreeting] = useState(defaultGreeting)
   const [mounted, setMounted] = useState(false)
-  const { setActiveSection } = useNav()
+  const { setActiveSection, navigateToLabs } = useNav()
   const content = tabContent[activeTab]
 
   const handleTabClick = (tabId: string, navTo?: NavSection) => {
     if (navTo) {
       // Navigate to the full page for this section
-      setActiveSection(navTo)
+      if (navTo === "labs") {
+        navigateToLabs()
+      } else {
+        setActiveSection(navTo)
+      }
     } else {
       // Just switch the tab content
       setActiveTab(tabId)
     }
   }
 
-  const navigateToLabs = () => {
-    setActiveSection("labs")
+  const handleLabsClick = (biomarkerId?: string) => {
+    navigateToLabs(biomarkerId)
   }
 
   // Update greeting when component mounts (client-side only)
@@ -199,11 +203,11 @@ export function MorningSignal({ userName = "Stephanie" }: { userName?: string })
             <div>
               <p className="text-sm font-medium text-foreground">
                 Your{" "}
-                <button onClick={navigateToLabs} className="text-primary hover:underline font-semibold">
+                <button onClick={() => handleLabsClick("vitamin-d")} className="text-primary hover:underline font-semibold">
                   Vitamin D
                 </button>
                 {" "}is optimal and{" "}
-                <button onClick={navigateToLabs} className="text-accent hover:underline font-semibold">
+                <button onClick={() => handleLabsClick("hdl")} className="text-accent hover:underline font-semibold">
                   HDL
                 </button>
                 {" "}is trending up.
@@ -214,7 +218,7 @@ export function MorningSignal({ userName = "Stephanie" }: { userName?: string })
             </div>
           </div>
           <button
-            onClick={navigateToLabs}
+            onClick={() => handleLabsClick()}
             className="flex-shrink-0 flex items-center gap-2 px-4 py-2.5 rounded-xl bg-primary text-primary-foreground text-sm font-medium min-h-[44px] hover:bg-primary/90 transition-colors active:scale-95"
           >
             View full lab analysis

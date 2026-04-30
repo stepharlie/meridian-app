@@ -1,6 +1,7 @@
 "use client"
 
 import { MeridianHeader } from "@/components/meridian/header"
+import { HealthIntelligence } from "@/components/meridian/health-intelligence"
 import { MorningSignal } from "@/components/meridian/morning-signal"
 import { MeridianScore } from "@/components/meridian/meridian-score"
 import { TodayStrategy } from "@/components/meridian/today-strategy"
@@ -52,16 +53,22 @@ function DashboardContent() {
     case "home":
       return (
         <>
-          <MorningSignal userName="Stephanie" />
-          <MeridianScore 
-            score={62} 
-            recovery="Moderate" 
-            load="Manage" 
-            nextStep="Walk + protein" 
-          />
-          <TodayStrategy />
-          <TodayFlow />
-          <SystemWatchlist />
+          {/* Primary Intelligence Block - Top Priority */}
+          <HealthIntelligence />
+          
+          {/* Secondary Components - Reduced Visual Priority */}
+          <div className="opacity-90">
+            <MorningSignal userName="Stephanie" />
+            <MeridianScore 
+              score={62} 
+              recovery="Moderate" 
+              load="Manage" 
+              nextStep="Walk + protein" 
+            />
+            <TodayStrategy />
+            <TodayFlow />
+            <SystemWatchlist />
+          </div>
         </>
       )
     case "explore":

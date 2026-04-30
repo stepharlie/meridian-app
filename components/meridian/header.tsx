@@ -42,10 +42,16 @@ const sidebarSections: { label: string; items: NavItem[] }[] = [
 
 export function MeridianHeader() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
-  const { activeSection, setActiveSection } = useNav()
+  const { activeSection, setActiveSection, navigateToLabs } = useNav()
 
   const handleNavClick = (sectionId: NavSection) => {
-    setActiveSection(sectionId)
+    // Scroll to top first for smooth transition
+    window.scrollTo({ top: 0, behavior: "smooth" })
+    if (sectionId === "labs") {
+      navigateToLabs()
+    } else {
+      setActiveSection(sectionId)
+    }
     setMobileMenuOpen(false)
   }
 

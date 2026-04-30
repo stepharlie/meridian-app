@@ -10,6 +10,7 @@ interface WatchItem {
   subtitle: string
   priority: "high" | "medium" | "low"
   navTo?: NavSection
+  biomarkerId?: string
 }
 
 interface ConnectionItem {
@@ -17,6 +18,7 @@ interface ConnectionItem {
   right: { icon: React.ReactNode; label: string }
   description: string
   navTo?: NavSection
+  biomarkerId?: string
 }
 
 const watchItems: WatchItem[] = [
@@ -26,6 +28,7 @@ const watchItems: WatchItem[] = [
     subtitle: "TSH watch",
     priority: "high",
     navTo: "labs",
+    biomarkerId: "tsh",
   },
   {
     icon: <Activity className="w-4 h-4" />,
@@ -47,6 +50,7 @@ const connections: ConnectionItem[] = [
     right: { icon: <Activity className="w-4 h-4" />, label: "Recovery" },
     description: "Thyroid + HRV",
     navTo: "labs",
+    biomarkerId: "tsh",
   },
   {
     left: { icon: <Footprints className="w-4 h-4" />, label: "Activity" },
@@ -69,11 +73,15 @@ const priorityConfig = {
 }
 
 export function SystemWatchlist() {
-  const { setActiveSection } = useNav()
+  const { setActiveSection, navigateToLabs } = useNav()
 
-  const handleItemClick = (navTo?: NavSection) => {
+  const handleItemClick = (navTo?: NavSection, biomarkerId?: string) => {
     if (navTo) {
-      setActiveSection(navTo)
+      if (navTo === "labs") {
+        navigateToLabs(biomarkerId)
+      } else {
+        setActiveSection(navTo)
+      }
     }
   }
 
@@ -93,7 +101,7 @@ export function SystemWatchlist() {
               return (
                 <button
                   key={index}
-                  onClick={() => handleItemClick(item.navTo)}
+                  onClick={() => handleItemClick(item.navTo, item.biomarkerId)}
                   className={cn(
                     "flex items-center gap-4 p-4 rounded-xl border transition-all hover:scale-[1.01] cursor-pointer w-full text-left",
                     "bg-secondary/30", config.border,
@@ -125,7 +133,7 @@ export function SystemWatchlist() {
             {connections.map((connection, index) => (
               <button
                 key={index}
-                onClick={() => handleItemClick(connection.navTo)}
+                onClick={() => handleItemClick(connection.navTo, connection.biomarkerId)}
                 className="flex items-center gap-3 p-4 rounded-xl bg-secondary/30 border border-border/30 transition-all hover:border-primary/20 cursor-pointer w-full text-left"
               >
                 {/* Left Node */}
