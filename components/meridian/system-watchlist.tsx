@@ -2,18 +2,21 @@
 
 import { AlertTriangle, Activity, Dumbbell, Link2, FlaskConical, Footprints, Moon } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { useNav, NavSection } from "./nav-context"
 
 interface WatchItem {
   icon: React.ReactNode
   title: string
   subtitle: string
   priority: "high" | "medium" | "low"
+  navTo?: NavSection
 }
 
 interface ConnectionItem {
   left: { icon: React.ReactNode; label: string }
   right: { icon: React.ReactNode; label: string }
   description: string
+  navTo?: NavSection
 }
 
 const watchItems: WatchItem[] = [
@@ -22,6 +25,7 @@ const watchItems: WatchItem[] = [
     title: "Thyroid trend",
     subtitle: "TSH watch",
     priority: "high",
+    navTo: "labs",
   },
   {
     icon: <Activity className="w-4 h-4" />,
@@ -42,16 +46,19 @@ const connections: ConnectionItem[] = [
     left: { icon: <FlaskConical className="w-4 h-4" />, label: "Labs" },
     right: { icon: <Activity className="w-4 h-4" />, label: "Recovery" },
     description: "Thyroid + HRV",
+    navTo: "labs",
   },
   {
     left: { icon: <Footprints className="w-4 h-4" />, label: "Activity" },
     right: { icon: <AlertTriangle className="w-4 h-4" />, label: "Stress" },
     description: "Steps reduce load",
+    navTo: "activity",
   },
   {
     left: { icon: <Moon className="w-4 h-4" />, label: "Method" },
     right: { icon: <Moon className="w-4 h-4" />, label: "Sleep" },
     description: "PM stack consistency",
+    navTo: "methods",
   },
 ]
 
@@ -62,6 +69,14 @@ const priorityConfig = {
 }
 
 export function SystemWatchlist() {
+  const { setActiveSection } = useNav()
+
+  const handleItemClick = (navTo?: NavSection) => {
+    if (navTo) {
+      setActiveSection(navTo)
+    }
+  }
+
   return (
     <section className="px-4 py-6 lg:px-6">
       <div className="grid gap-6 lg:grid-cols-2">
@@ -76,11 +91,13 @@ export function SystemWatchlist() {
             {watchItems.map((item, index) => {
               const config = priorityConfig[item.priority]
               return (
-                <div
+                <button
                   key={index}
+                  onClick={() => handleItemClick(item.navTo)}
                   className={cn(
-                    "flex items-center gap-4 p-4 rounded-xl border transition-all hover:scale-[1.01] cursor-pointer",
-                    "bg-secondary/30", config.border
+                    "flex items-center gap-4 p-4 rounded-xl border transition-all hover:scale-[1.01] cursor-pointer w-full text-left",
+                    "bg-secondary/30", config.border,
+                    item.navTo && "hover:border-primary/40"
                   )}
                 >
                   <div className={cn("w-10 h-10 rounded-xl flex items-center justify-center", config.bg)}>
@@ -91,7 +108,7 @@ export function SystemWatchlist() {
                     <p className="text-xs text-muted-foreground">{item.subtitle}</p>
                   </div>
                   <div className={cn("w-2 h-2 rounded-full", config.dot)} />
-                </div>
+                </button>
               )
             })}
           </div>
@@ -106,9 +123,10 @@ export function SystemWatchlist() {
 
           <div className="space-y-3">
             {connections.map((connection, index) => (
-              <div
+              <button
                 key={index}
-                className="flex items-center gap-3 p-4 rounded-xl bg-secondary/30 border border-border/30 transition-all hover:border-primary/20 cursor-pointer"
+                onClick={() => handleItemClick(connection.navTo)}
+                className="flex items-center gap-3 p-4 rounded-xl bg-secondary/30 border border-border/30 transition-all hover:border-primary/20 cursor-pointer w-full text-left"
               >
                 {/* Left Node */}
                 <div className="flex items-center gap-2 flex-shrink-0">
@@ -135,7 +153,7 @@ export function SystemWatchlist() {
 
                 {/* Description - Mobile */}
                 <div className="text-xs font-medium text-foreground whitespace-nowrap">{connection.description}</div>
-              </div>
+              </button>
             ))}
           </div>
         </div>

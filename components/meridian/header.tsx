@@ -11,16 +11,17 @@ interface NavItem {
   label: string
 }
 
-// Main navigation items (bottom nav)
+// Main navigation items - unified across desktop and mobile
 const mainNavItems: NavItem[] = [
   { id: "home", icon: Home, label: "Home" },
   { id: "explore", icon: Compass, label: "Explore" },
   { id: "insights", icon: BarChart3, label: "Insights" },
+  { id: "labs", icon: FlaskConical, label: "Labs" },
   { id: "methods", icon: Beaker, label: "Methods" },
   { id: "profile", icon: User, label: "Profile" },
 ]
 
-// Sidebar additional sections
+// Sidebar additional sections (secondary navigation)
 const sidebarSections: { label: string; items: NavItem[] }[] = [
   { 
     label: "WEARABLES", 
@@ -33,7 +34,6 @@ const sidebarSections: { label: string; items: NavItem[] }[] = [
   { 
     label: "HEALTH DATA", 
     items: [
-      { id: "labs", icon: FlaskConical, label: "Labs" },
       { id: "hormones", icon: Heart, label: "Hormones" },
       { id: "action-plan", icon: ListTodo, label: "Action Plan" },
     ]

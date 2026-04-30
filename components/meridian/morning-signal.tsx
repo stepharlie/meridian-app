@@ -1,8 +1,9 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { Activity, FlaskConical, Zap, Sparkles, Sun, Moon, Sunset } from "lucide-react"
+import { Activity, FlaskConical, Zap, Sparkles, Sun, Moon, Sunset, ArrowRight } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { useNav, NavSection } from "./nav-context"
 
 function getTimeBasedGreeting(): { greeting: string; icon: typeof Sun; label: string } {
   const hour = new Date().getHours()
@@ -18,11 +19,11 @@ function getTimeBasedGreeting(): { greeting: string; icon: typeof Sun; label: st
   }
 }
 
-const tabs = [
+const tabs: { id: string; label: string; icon: typeof Activity; navTo?: NavSection }[] = [
   { id: "recovery", label: "Recovery", icon: Activity },
-  { id: "labs", label: "Labs", icon: FlaskConical },
-  { id: "activity", label: "Activity", icon: Zap },
-  { id: "method", label: "Method", icon: Sparkles },
+  { id: "labs", label: "Labs", icon: FlaskConical, navTo: "labs" },
+  { id: "activity", label: "Activity", icon: Zap, navTo: "activity" },
+  { id: "method", label: "Method", icon: Sparkles, navTo: "methods" },
 ]
 
 const tabContent: Record<string, { signal: string; lever: string; watch: string }> = {
@@ -51,7 +52,22 @@ const tabContent: Record<string, { signal: string; lever: string; watch: string 
 export function MorningSignal({ userName = "Stephanie" }: { userName?: string }) {
   const [activeTab, setActiveTab] = useState("recovery")
   const [timeGreeting, setTimeGreeting] = useState(getTimeBasedGreeting())
+  const { setActiveSection } = useNav()
   const content = tabContent[activeTab]
+
+  const handleTabClick = (tabId: string, navTo?: NavSection) => {
+    if (navTo) {
+      // Navigate to the full page for this section
+      setActiveSection(navTo)
+    } else {
+      // Just switch the tab content
+      setActiveTab(tabId)
+    }
+  }
+
+  const navigateToLabs = () => {
+    setActiveSection("labs")
+  }
 
   // Update greeting when component mounts (client-side)
   useEffect(() => {
@@ -104,23 +120,24 @@ export function MorningSignal({ userName = "Stephanie" }: { userName?: string })
         {tabs.map((tab) => (
           <button
             key={tab.id}
-            onClick={() => setActiveTab(tab.id)}
+            onClick={() => handleTabClick(tab.id, tab.navTo)}
             className={cn(
               "relative flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium whitespace-nowrap transition-all duration-200 min-h-[44px]",
               "active:scale-95",
-              activeTab === tab.id
+              activeTab === tab.id && !tab.navTo
                 ? "bg-primary text-primary-foreground shadow-lg"
                 : "bg-secondary/50 text-muted-foreground hover:bg-secondary hover:text-foreground"
             )}
             style={{
-              boxShadow: activeTab === tab.id ? '0 0 20px oklch(0.75 0.12 195 / 0.3)' : undefined
+              boxShadow: activeTab === tab.id && !tab.navTo ? '0 0 20px oklch(0.75 0.12 195 / 0.3)' : undefined
             }}
           >
             <tab.icon className={cn(
               "w-4 h-4 transition-transform duration-200",
-              activeTab === tab.id && "scale-110"
+              activeTab === tab.id && !tab.navTo && "scale-110"
             )} />
             {tab.label}
+            {tab.navTo && <ArrowRight className="w-3 h-3 ml-1 opacity-50" />}
           </button>
         ))}
       </div>
@@ -164,6 +181,40 @@ export function MorningSignal({ userName = "Stephanie" }: { userName?: string })
              activeTab === "activity" ? "Heart rate zone" : "Supplement timing"}
           </p>
           <p className="text-xs text-muted-foreground leading-relaxed">{content.watch}</p>
+        </div>
+      </div>
+
+      {/* Labs Quick Access CTA */}
+      <div className="mt-6 p-4 rounded-xl bg-primary/5 border border-primary/20">
+        <div className="flex items-center justify-between gap-4">
+          <div className="flex items-start gap-3">
+            <div className="flex-shrink-0 w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
+              <FlaskConical className="w-5 h-5 text-primary" />
+            </div>
+            <div>
+              <p className="text-sm font-medium text-foreground">
+                Your{" "}
+                <button onClick={navigateToLabs} className="text-primary hover:underline font-semibold">
+                  Vitamin D
+                </button>
+                {" "}is optimal and{" "}
+                <button onClick={navigateToLabs} className="text-accent hover:underline font-semibold">
+                  HDL
+                </button>
+                {" "}is trending up.
+              </p>
+              <p className="text-xs text-muted-foreground mt-1">
+                Last updated 2 weeks ago from your blood panel.
+              </p>
+            </div>
+          </div>
+          <button
+            onClick={navigateToLabs}
+            className="flex-shrink-0 flex items-center gap-2 px-4 py-2.5 rounded-xl bg-primary text-primary-foreground text-sm font-medium min-h-[44px] hover:bg-primary/90 transition-colors active:scale-95"
+          >
+            View full lab analysis
+            <ArrowRight className="w-4 h-4" />
+          </button>
         </div>
       </div>
     </section>

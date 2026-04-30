@@ -12,6 +12,7 @@ import { ExplorePage } from "@/components/meridian/pages/explore-page"
 import { InsightsPage } from "@/components/meridian/pages/insights-page"
 import { MethodsPage } from "@/components/meridian/pages/methods-page"
 import { ProfilePage } from "@/components/meridian/pages/profile-page"
+import { LabsPage } from "@/components/meridian/pages/labs-page"
 import { Moon, Activity, FlaskConical, User, Heart, Beaker, ListTodo } from "lucide-react"
 
 function SectionPlaceholder({ 
@@ -109,11 +110,10 @@ function DashboardContent() {
       )
     case "labs":
       return (
-        <SectionPlaceholder 
-          title="Lab Results" 
-          icon={FlaskConical}
-          description="View and track your blood work, hormone panels, and other lab results over time."
-        />
+        <section className="px-4 py-6 lg:px-6">
+          <h1 className="text-xl font-semibold text-foreground mb-6">Labs</h1>
+          <LabsPage />
+        </section>
       )
     case "body":
       return (
