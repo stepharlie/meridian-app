@@ -49,9 +49,13 @@ const tabContent: Record<string, { signal: string; lever: string; watch: string 
   },
 }
 
+// Default greeting used for SSR to avoid hydration mismatch
+const defaultGreeting = { greeting: "Good morning", icon: Sun, label: "Morning Signal" }
+
 export function MorningSignal({ userName = "Stephanie" }: { userName?: string }) {
   const [activeTab, setActiveTab] = useState("recovery")
-  const [timeGreeting, setTimeGreeting] = useState(getTimeBasedGreeting())
+  const [timeGreeting, setTimeGreeting] = useState(defaultGreeting)
+  const [mounted, setMounted] = useState(false)
   const { setActiveSection } = useNav()
   const content = tabContent[activeTab]
 
@@ -69,8 +73,9 @@ export function MorningSignal({ userName = "Stephanie" }: { userName?: string })
     setActiveSection("labs")
   }
 
-  // Update greeting when component mounts (client-side)
+  // Update greeting when component mounts (client-side only)
   useEffect(() => {
+    setMounted(true)
     setTimeGreeting(getTimeBasedGreeting())
     
     // Update every minute to handle time changes
@@ -91,13 +96,13 @@ export function MorningSignal({ userName = "Stephanie" }: { userName?: string })
           <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
           <span className="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
         </span>
-        <span className="text-xs font-medium text-primary uppercase tracking-wider">{timeGreeting.label} Live Health Overview</span>
+        <span className="text-xs font-medium text-primary uppercase tracking-wider">{mounted ? timeGreeting.label : defaultGreeting.label} Live Health Overview</span>
       </div>
 
       {/* Greeting */}
       <h1 className="text-2xl sm:text-3xl font-semibold text-foreground mb-3 text-balance flex items-center gap-3">
         <GreetingIcon className="w-7 h-7 sm:w-8 sm:h-8 text-primary" />
-        {timeGreeting.greeting}, {userName}
+        {mounted ? timeGreeting.greeting : defaultGreeting.greeting}, {userName}
       </h1>
       <p className="text-sm sm:text-base text-muted-foreground leading-relaxed mb-6 max-w-2xl text-pretty">
         Meridian reads your recovery, labs, activity, cycle, body composition, and method adherence as one connected system — so today&apos;s next step is clear.
