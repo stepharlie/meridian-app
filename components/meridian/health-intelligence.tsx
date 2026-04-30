@@ -2,19 +2,11 @@
 
 import { useState, useEffect, useMemo } from "react"
 import { 
-  Sparkles, 
   ArrowRight, 
   FlaskConical, 
-  AlertCircle,
-  CheckCircle,
-  TrendingUp,
-  Heart,
-  Zap,
-  Activity,
   Upload,
   Plus,
 } from "lucide-react"
-import { cn } from "@/lib/utils"
 import { useNav } from "./nav-context"
 
 // Types matching labs-page
@@ -214,73 +206,68 @@ export function HealthIntelligence() {
   const priorityBiomarkers = biomarkersWithStatus.filter(b => b.status !== "optimal")
   const optimalBiomarkers = biomarkersWithStatus.filter(b => b.status === "optimal")
 
-  // Generate primary insight sentence
-  const primaryInsight = useMemo(() => {
+  // Generate primary insight sentence with bold biomarker names
+  const primaryInsightParts = useMemo(() => {
     if (!hasLabData) return null
     
     if (priorityBiomarkers.length === 0) {
-      return "Your biological markers are well-balanced. This is a great foundation for sustained energy, recovery, and long-term health."
+      return {
+        before: "Your biological markers are well-balanced — a strong foundation for sustained energy and recovery.",
+        biomarkers: [] as { name: string; id: string }[],
+        after: ""
+      }
     }
     
     if (priorityBiomarkers.length === 1) {
       const b = priorityBiomarkers[0]
       if (b.status === "out-of-range") {
-        return `Your ${b.name} needs attention and may be affecting your overall wellness. This is a manageable area to address.`
+        return {
+          before: "Your ",
+          biomarkers: [{ name: b.name, id: b.id }],
+          after: " is out of range and is likely limiting your recovery and energy."
+        }
       }
-      return `Your ${b.name} is worth monitoring, as it may be influencing your energy and recovery capacity.`
+      if (b.status === "attention") {
+        return {
+          before: "Your ",
+          biomarkers: [{ name: b.name, id: b.id }],
+          after: " is worth prioritizing — it is likely limiting your energy and recovery capacity."
+        }
+      }
+      return {
+        before: "Your ",
+        biomarkers: [{ name: b.name, id: b.id }],
+        after: " is worth watching — it may be influencing your energy levels."
+      }
     }
     
     // Multiple priority markers
     const topTwo = priorityBiomarkers.slice(0, 2)
-    const names = topTwo.map(b => b.name).join(" and ")
     const hasOutOfRange = topTwo.some(b => b.status === "out-of-range")
+    const hasAttention = topTwo.some(b => b.status === "attention")
     
     if (hasOutOfRange) {
-      return `Your recovery potential may be limited right now, primarily influenced by ${names} levels.`
-    }
-    
-    return `A few markers are worth watching — ${names} — as they may be influencing your energy and cardiometabolic resilience.`
-  }, [hasLabData, priorityBiomarkers])
-
-  // Generate supporting insights (max 3)
-  const supportingInsights = useMemo(() => {
-    const insights: { text: string; icon: typeof Heart; color: string; biomarkerId?: string }[] = []
-    
-    if (!hasLabData) return insights
-    
-    // Add insight for each priority biomarker (max 2)
-    priorityBiomarkers.slice(0, 2).forEach(b => {
-      let icon = Activity
-      let color = "text-amber-400"
-      
-      if (b.status === "out-of-range") {
-        icon = AlertCircle
-        color = "text-rose-400"
-      } else if (b.status === "attention") {
-        icon = AlertCircle
-        color = "text-orange-400"
+      return {
+        before: "Your recovery is likely limited right now, primarily influenced by ",
+        biomarkers: topTwo.map(b => ({ name: b.name, id: b.id })),
+        after: " levels."
       }
-      
-      insights.push({
-        text: `${b.name}: Within clinical range, but below optimal for peak energy and recovery.`,
-        icon,
-        color,
-        biomarkerId: b.id,
-      })
-    })
-    
-    // Add positive insight if we have optimal markers
-    if (optimalBiomarkers.length > 0) {
-      const optimalNames = optimalBiomarkers.slice(0, 2).map(b => b.name).join(" and ")
-      insights.push({
-        text: `${optimalNames} ${optimalBiomarkers.length > 1 ? "are" : "is"} in optimal range, supporting your metabolic foundation.`,
-        icon: CheckCircle,
-        color: "text-emerald-400",
-      })
     }
     
-    return insights.slice(0, 3)
-  }, [hasLabData, priorityBiomarkers, optimalBiomarkers])
+    if (hasAttention) {
+      return {
+        before: "",
+        biomarkers: topTwo.map(b => ({ name: b.name, id: b.id })),
+        after: " are worth prioritizing — they are likely limiting your energy and cardiometabolic resilience."
+      }
+    }
+    
+    return {
+      before: "",
+      biomarkers: topTwo.map(b => ({ name: b.name, id: b.id })),
+      after: " are worth watching — they may be influencing your energy levels."
+    }
+  }, [hasLabData, priorityBiomarkers])
 
   // Get next best step from top priority biomarker
   const nextBestStep = priorityBiomarkers.length > 0 
@@ -289,18 +276,14 @@ export function HealthIntelligence() {
       ? "Continue your current health practices to maintain this excellent balance."
       : null
 
-  const handleInsightClick = (biomarkerId?: string) => {
-    navigateToLabs(biomarkerId)
-  }
-
   // SSR-safe: show loading state until mounted
   if (!mounted) {
     return (
-      <section className="px-4 py-6 lg:px-6">
-        <div className="p-6 rounded-2xl bg-gradient-to-br from-primary/5 via-card to-accent/5 border border-primary/20 animate-pulse">
-          <div className="h-8 bg-secondary/50 rounded w-1/3 mb-4" />
-          <div className="h-16 bg-secondary/50 rounded mb-4" />
-          <div className="h-12 bg-secondary/50 rounded w-2/3" />
+      <section className="px-4 py-4 lg:px-6">
+        <div className="animate-pulse">
+          <div className="h-20 bg-secondary/30 rounded-xl mb-4" />
+          <div className="h-16 bg-secondary/30 rounded-xl mb-4" />
+          <div className="h-12 bg-secondary/30 rounded-xl w-48" />
         </div>
       </section>
     )
@@ -309,109 +292,82 @@ export function HealthIntelligence() {
   // Empty state - no lab data
   if (!hasLabData) {
     return (
-      <section className="px-4 py-6 lg:px-6">
-        <div className="p-6 rounded-2xl bg-gradient-to-br from-primary/5 via-card to-accent/5 border border-primary/20">
-          <div className="flex items-center gap-2 mb-4">
-            <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
-              <Sparkles className="w-4 h-4 text-primary" />
-            </div>
-            <span className="text-xs font-semibold text-primary uppercase tracking-wider">Health Intelligence</span>
-          </div>
-
-          <h2 className="text-xl sm:text-2xl font-semibold text-foreground mb-3 text-pretty">
-            No lab data available yet
-          </h2>
-          <p className="text-sm text-muted-foreground leading-relaxed mb-6 max-w-2xl text-pretty">
-            Upload your latest bloodwork to unlock personalized insights about your health. Meridian will analyze your biomarkers and provide clear, actionable guidance.
+      <section className="px-4 py-4 lg:px-6">
+        <div className="p-5 rounded-xl bg-card border border-border/50">
+          <p className="text-base text-foreground leading-relaxed mb-4">
+            Upload your latest bloodwork to unlock personalized insights about your health.
           </p>
 
-          <div className="flex flex-col sm:flex-row gap-3">
+          <div className="flex flex-col sm:flex-row gap-3 mb-4">
             <button
               onClick={() => navigateToLabs()}
-              className="flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-primary text-primary-foreground text-sm font-medium min-h-[44px] hover:bg-primary/90 transition-colors active:scale-95"
+              className="w-full sm:w-auto flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-primary text-primary-foreground text-sm font-medium min-h-[44px] hover:bg-primary/90 transition-colors active:scale-95"
             >
               <Plus className="w-4 h-4" />
               Add Labs
             </button>
             <button
               onClick={() => navigateToLabs()}
-              className="flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-secondary/50 border border-border/50 text-foreground text-sm font-medium min-h-[44px] hover:bg-secondary transition-colors active:scale-95"
+              className="w-full sm:w-auto flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-secondary/50 border border-border/50 text-foreground text-sm font-medium min-h-[44px] hover:bg-secondary transition-colors active:scale-95"
             >
               <Upload className="w-4 h-4" />
               Upload PDF
             </button>
           </div>
+
+          <button
+            onClick={() => navigateToLabs()}
+            className="flex items-center gap-2 text-sm text-primary hover:underline font-medium"
+          >
+            <FlaskConical className="w-4 h-4" />
+            View full lab analysis
+            <ArrowRight className="w-4 h-4" />
+          </button>
         </div>
       </section>
     )
   }
 
   return (
-    <section className="px-4 py-6 lg:px-6">
-      {/* Primary Intelligence Block */}
-      <div className="p-6 rounded-2xl bg-gradient-to-br from-primary/5 via-card to-accent/5 border border-primary/20">
-        {/* Header */}
-        <div className="flex items-center gap-2 mb-4">
-          <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
-            <Sparkles className="w-4 h-4 text-primary" />
-          </div>
-          <span className="text-xs font-semibold text-primary uppercase tracking-wider">Health Intelligence</span>
-          <span className="text-[10px] text-muted-foreground ml-auto">Based on your lab profile</span>
-        </div>
-
-        {/* Primary Insight */}
-        <h2 className="text-lg sm:text-xl font-semibold text-foreground mb-4 leading-relaxed text-pretty">
-          {primaryInsight}
-        </h2>
-
-        {/* Supporting Insights */}
-        {supportingInsights.length > 0 && (
-          <div className="space-y-2 mb-6">
-            {supportingInsights.map((insight, idx) => (
+    <section className="px-4 py-4 lg:px-6">
+      {/* Primary Insight - Dominant sentence */}
+      {primaryInsightParts && (
+        <p className="text-base sm:text-lg text-foreground leading-relaxed mb-5">
+          {primaryInsightParts.before}
+          {primaryInsightParts.biomarkers.map((b, idx) => (
+            <span key={b.id}>
+              {idx > 0 && (idx === primaryInsightParts.biomarkers.length - 1 ? " and " : ", ")}
               <button
-                key={idx}
-                onClick={() => handleInsightClick(insight.biomarkerId)}
-                className="flex items-start gap-3 w-full text-left p-3 rounded-xl bg-secondary/30 border border-border/30 hover:border-primary/30 transition-all group"
+                onClick={() => navigateToLabs(b.id)}
+                className="font-semibold text-foreground hover:text-primary transition-colors"
               >
-                <insight.icon className={cn("w-4 h-4 mt-0.5 flex-shrink-0", insight.color)} />
-                <span className="text-sm text-muted-foreground leading-relaxed group-hover:text-foreground transition-colors">
-                  {insight.text}
-                </span>
+                {b.name}
               </button>
-            ))}
-          </div>
-        )}
-
-        {/* Next Best Step */}
-        {nextBestStep && (
-          <div className="p-4 rounded-xl bg-accent/10 border border-accent/20 mb-6">
-            <div className="flex items-start gap-3">
-              <div className="flex-shrink-0 w-8 h-8 rounded-lg bg-accent/20 flex items-center justify-center">
-                <TrendingUp className="w-4 h-4 text-accent" />
-              </div>
-              <div>
-                <span className="text-xs font-semibold text-accent uppercase tracking-wider">Next Best Step</span>
-                <p className="text-sm text-foreground mt-1 leading-relaxed">{nextBestStep}</p>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* Primary CTA */}
-        <button
-          onClick={() => navigateToLabs()}
-          className="flex items-center justify-center gap-2 w-full sm:w-auto px-6 py-3 rounded-xl bg-primary text-primary-foreground text-sm font-medium min-h-[44px] hover:bg-primary/90 transition-colors active:scale-95"
-        >
-          <FlaskConical className="w-4 h-4" />
-          View full lab analysis
-          <ArrowRight className="w-4 h-4" />
-        </button>
-
-        {/* Microcopy */}
-        <p className="text-xs text-muted-foreground/70 mt-4">
-          Sourced from your latest bloodwork
+            </span>
+          ))}
+          {primaryInsightParts.after}
         </p>
-      </div>
+      )}
+
+      {/* Next Step - More prominent */}
+      {nextBestStep && (
+        <div className="mb-6 p-4 rounded-xl bg-primary/5 border border-primary/10">
+          <p className="text-sm sm:text-base text-foreground leading-relaxed">
+            <span className="font-semibold text-primary">Next step:</span>{" "}
+            <span className="text-foreground">{nextBestStep}</span>
+          </p>
+        </div>
+      )}
+
+      {/* Labs CTA - Full width on mobile */}
+      <button
+        onClick={() => navigateToLabs()}
+        className="w-full sm:w-auto flex items-center justify-center sm:justify-start gap-2 px-4 py-3 sm:px-0 sm:py-0 rounded-xl sm:rounded-none bg-primary/5 sm:bg-transparent border border-primary/10 sm:border-0 text-sm text-primary hover:bg-primary/10 sm:hover:bg-transparent sm:hover:underline font-medium transition-colors"
+      >
+        <FlaskConical className="w-4 h-4" />
+        View full lab analysis
+        <ArrowRight className="w-4 h-4" />
+      </button>
     </section>
   )
 }

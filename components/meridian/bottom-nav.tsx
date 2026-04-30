@@ -1,6 +1,6 @@
 "use client"
 
-import { Home, Compass, BarChart3, Beaker, User, FlaskConical } from "lucide-react"
+import { Home, BarChart3, Beaker, User, FlaskConical } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { useNav, NavSection } from "./nav-context"
 
@@ -12,10 +12,9 @@ interface BottomNavItem {
 
 const navItems: BottomNavItem[] = [
   { id: "home", icon: Home, label: "Home" },
-  { id: "explore", icon: Compass, label: "Explore" },
-  { id: "insights", icon: BarChart3, label: "Insights" },
-  { id: "methods", icon: Beaker, label: "Methods" },
   { id: "labs", icon: FlaskConical, label: "Labs" },
+  { id: "insights", icon: BarChart3, label: "Insights" },
+  { id: "methods", icon: Beaker, label: "Method" },
   { id: "profile", icon: User, label: "Profile" },
 ]
 

@@ -15,20 +15,24 @@ interface NavContextType {
 const NavContext = createContext<NavContextType | undefined>(undefined)
 
 export function NavProvider({ children }: { children: ReactNode }) {
-  const [activeSection, setActiveSection] = useState<NavSection>("home")
+  const [activeSection, setActiveSectionState] = useState<NavSection>("home")
   const [targetBiomarkerId, setTargetBiomarkerId] = useState<string | null>(null)
 
-  const navigateToLabs = useCallback((biomarkerId?: string) => {
-    // First scroll to top
+  // Wrap setActiveSection to always scroll to top
+  const setActiveSection = useCallback((section: NavSection) => {
     window.scrollTo({ top: 0, behavior: "smooth" })
-    
+    setActiveSectionState(section)
+  }, [])
+
+  const navigateToLabs = useCallback((biomarkerId?: string) => {
     // Set target biomarker if provided
     if (biomarkerId) {
       setTargetBiomarkerId(biomarkerId)
     }
     
-    // Navigate to labs
-    setActiveSection("labs")
+    // Navigate to labs (setActiveSection handles scroll)
+    setActiveSectionState("labs")
+    window.scrollTo({ top: 0, behavior: "smooth" })
   }, [])
 
   const clearTargetBiomarker = useCallback(() => {

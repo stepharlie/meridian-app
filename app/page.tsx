@@ -1,8 +1,8 @@
 "use client"
 
 import { MeridianHeader } from "@/components/meridian/header"
+import { HomeGreeting } from "@/components/meridian/home-greeting"
 import { HealthIntelligence } from "@/components/meridian/health-intelligence"
-import { MorningSignal } from "@/components/meridian/morning-signal"
 import { MeridianScore } from "@/components/meridian/meridian-score"
 import { TodayStrategy } from "@/components/meridian/today-strategy"
 import { TodayFlow } from "@/components/meridian/today-flow"
@@ -53,12 +53,14 @@ function DashboardContent() {
     case "home":
       return (
         <>
-          {/* Primary Intelligence Block - Top Priority */}
+          {/* 1. Greeting - Always first */}
+          <HomeGreeting />
+          
+          {/* 2. Health Intelligence Summary - Dominant insight */}
           <HealthIntelligence />
           
-          {/* Secondary Components - Reduced Visual Priority */}
-          <div className="opacity-90">
-            <MorningSignal userName="Stephanie" />
+          {/* 3. Supporting Context - Clearly secondary (80% decision / 20% context) */}
+          <div className="opacity-75">
             <MeridianScore 
               score={62} 
               recovery="Moderate" 
@@ -162,7 +164,7 @@ function DashboardContent() {
 export default function MeridianDashboard() {
   return (
     <NavProvider>
-      <div className="min-h-screen bg-background pb-24 lg:pb-8 gradient-mesh">
+      <div className="min-h-screen bg-background pb-28 lg:pb-8 gradient-mesh">
         <MeridianHeader />
         
         <main className="max-w-6xl mx-auto">

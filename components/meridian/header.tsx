@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { Menu, Home, Compass, BarChart3, Beaker, User, X, Moon, Activity, FlaskConical, Heart, ListTodo } from "lucide-react"
+import { Menu, Home, BarChart3, Beaker, User, X, Moon, Activity, FlaskConical, Heart, ListTodo } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { useNav, NavSection } from "./nav-context"
 
@@ -14,10 +14,9 @@ interface NavItem {
 // Main navigation items - unified across desktop and mobile
 const mainNavItems: NavItem[] = [
   { id: "home", icon: Home, label: "Home" },
-  { id: "explore", icon: Compass, label: "Explore" },
-  { id: "insights", icon: BarChart3, label: "Insights" },
   { id: "labs", icon: FlaskConical, label: "Labs" },
-  { id: "methods", icon: Beaker, label: "Methods" },
+  { id: "insights", icon: BarChart3, label: "Insights" },
+  { id: "methods", icon: Beaker, label: "Method" },
   { id: "profile", icon: User, label: "Profile" },
 ]
 

@@ -590,11 +590,11 @@ const BiomarkerCard = ({
   // Determine if improved or declined
   const trendText = biomarker.previousValue ? (
     trend === "up" && (biomarker.id === "hdl" || biomarker.id === "vitamin-d" || biomarker.id === "b12") 
-      ? `Improved from ${biomarker.previousValue}`
+      ? `Up from ${biomarker.previousValue}`
       : trend === "down" && (biomarker.id === "glucose" || biomarker.id === "triglycerides" || biomarker.id === "tsh" || biomarker.id === "alt" || biomarker.id === "ast")
-      ? `Improved from ${biomarker.previousValue}`
+      ? `Down from ${biomarker.previousValue}`
       : trend !== "stable"
-      ? `Changed from ${biomarker.previousValue}`
+      ? `Previously ${biomarker.previousValue}`
       : `Stable at ${biomarker.previousValue}`
   ) : null
 
@@ -1761,7 +1761,7 @@ export function LabsPage() {
         </div>
         <button
           onClick={() => setShowAddLabsModal(true)}
-          className="w-full sm:w-auto px-6 py-3 rounded-xl bg-primary text-primary-foreground font-medium hover:bg-primary/90 transition-colors flex items-center justify-center gap-2"
+          className="w-full sm:w-auto px-6 py-3 rounded-xl bg-primary text-primary-foreground font-medium hover:bg-primary/90 transition-colors flex items-center justify-center gap-2 min-h-[48px]"
         >
           <Plus className="w-4 h-4" />
           Add Labs
@@ -1811,8 +1811,8 @@ export function LabsPage() {
             </div>
           </div>
 
-          {/* Stats Grid */}
-          <div className="flex-1 grid grid-cols-2 sm:grid-cols-5 gap-3">
+          {/* Stats Grid - Stack on mobile */}
+          <div className="flex-1 grid grid-cols-1 sm:grid-cols-5 gap-3">
             <div className="p-4 rounded-xl bg-secondary/50 border border-border/30 text-center">
               <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-widest block mb-1">Last Lab</span>
               <span className="text-sm font-semibold text-foreground">{latestLabDate}</span>
