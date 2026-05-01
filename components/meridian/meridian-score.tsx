@@ -10,6 +10,14 @@ interface MeridianScoreProps {
   nextStep?: string
 }
 
+const contributingFactors = [
+  { name: "Sleep", score: 75, explanation: "Sleep score hit 75 — REM was short due to late screen time" },
+  { name: "Recovery/HRV", score: 45, explanation: "HRV at 19ms indicates nervous system is under load" },
+  { name: "Activity", score: 60, explanation: "Activity balanced but intensity was high for luteal phase" },
+  { name: "Labs", score: 72, explanation: "TSH elevated at 3.03 — thyroid needs support this season" },
+  { name: "Method", score: 50, explanation: "PM stack missed 3 nights this week affecting sleep quality" },
+]
+
 export function MeridianScore({
   score = 62,
   recovery = "Moderate",
@@ -18,6 +26,7 @@ export function MeridianScore({
 }: MeridianScoreProps) {
   const [animatedScore, setAnimatedScore] = useState(0)
   const [isVisible, setIsVisible] = useState(false)
+  const [isExpanded, setIsExpanded] = useState(false)
 
   useEffect(() => {
     const timer = setTimeout(() => setIsVisible(true), 100)
@@ -58,12 +67,23 @@ export function MeridianScore({
     return "Needs Attention"
   }
 
+  const getFactorBarColor = (s: number) => {
+    if (s >= 80) return "bg-chart-2"
+    if (s >= 60) return "bg-accent"
+    if (s >= 40) return "bg-chart-3"
+    return "bg-chart-4"
+  }
+
   const circumference = 2 * Math.PI * 45
   const strokeDashoffset = circumference - (animatedScore / 100) * circumference
 
   return (
     <section className="px-4 py-6 lg:px-6">
-      <div className="p-6 rounded-2xl bg-card border border-border/50">
+      <div 
+        className="p-6 rounded-2xl bg-card border border-border/50 cursor-pointer select-none"
+        onClick={() => setIsExpanded(!isExpanded)}
+        style={{ transition: 'all 0.38s cubic-bezier(.22,1,.36,1)' }}
+      >
         <div className="flex flex-col lg:flex-row lg:items-center gap-6">
           {/* Score Circle */}
           <div className="flex flex-col items-center">
@@ -99,7 +119,10 @@ export function MeridianScore({
                 />
               </svg>
               <div className="absolute inset-0 flex flex-col items-center justify-center">
-                <span className={cn("text-4xl font-bold tabular-nums", getScoreColor(animatedScore))}>
+                <span 
+                  className={cn("tabular-nums", getScoreColor(animatedScore))}
+                  style={{ fontFamily: "'Fraunces', serif", fontSize: '54px', fontWeight: 700, lineHeight: 0.9 }}
+                >
                   {animatedScore}
                 </span>
                 <span className="text-xs text-muted-foreground">{getStatusLabel(animatedScore)}</span>
@@ -124,6 +147,47 @@ export function MeridianScore({
               <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-widest block mb-1">Next Step</span>
               <span className="text-sm font-semibold text-primary">{nextStep}</span>
             </div>
+          </div>
+        </div>
+
+        {/* Contributing Factors - Expandable */}
+        <div 
+          style={{
+            overflow: 'hidden',
+            maxHeight: isExpanded ? '400px' : '0px',
+            opacity: isExpanded ? 1 : 0,
+            transition: 'max-height 0.38s cubic-bezier(.22,1,.36,1), opacity 0.38s cubic-bezier(.22,1,.36,1)',
+            marginTop: isExpanded ? '24px' : '0px'
+          }}
+        >
+          <div className="text-xs font-semibold text-muted-foreground uppercase tracking-widest mb-4">
+            Contributing Factors
+          </div>
+          <div className="flex flex-col gap-4">
+            {contributingFactors.map((factor) => (
+              <div key={factor.name} className="flex flex-col gap-1">
+                <div className="flex items-center gap-4">
+                  <div className="w-24 flex-shrink-0">
+                    <span className="text-xs font-medium text-foreground">{factor.name}</span>
+                  </div>
+                  <div className="flex-1 flex items-center gap-3">
+                    <div className="flex-1 h-2 rounded-full bg-secondary overflow-hidden">
+                      <div 
+                        className={cn("h-full rounded-full", getFactorBarColor(factor.score))}
+                        style={{ 
+                          width: `${factor.score}%`,
+                          transition: 'width 0.38s cubic-bezier(.22,1,.36,1)'
+                        }}
+                      />
+                    </div>
+                    <span className="w-8 text-xs font-semibold text-muted-foreground tabular-nums">{factor.score}</span>
+                  </div>
+                </div>
+                <div className="pl-28">
+                  <span className="text-[11px] text-muted-foreground leading-tight">{factor.explanation}</span>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
 

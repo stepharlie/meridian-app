@@ -1,5 +1,6 @@
 "use client"
 
+import { useEffect, useState } from "react"
 import { MeridianHeader } from "@/components/meridian/header"
 import { HomeGreeting } from "@/components/meridian/home-greeting"
 import { HealthIntelligence } from "@/components/meridian/health-intelligence"
@@ -14,7 +15,41 @@ import { InsightsPage } from "@/components/meridian/pages/insights-page"
 import { MethodsPage } from "@/components/meridian/pages/methods-page"
 import { ProfilePage } from "@/components/meridian/pages/profile-page"
 import { LabsPage } from "@/components/meridian/pages/labs-page"
+import { SleepPage } from "@/components/meridian/pages/sleep-page"
+import { ActivityPage } from "@/components/meridian/pages/activity-page"
 import { Moon, Activity, FlaskConical, User, Heart, Beaker, ListTodo } from "lucide-react"
+
+function PageTransition({ 
+  children, 
+  sectionKey 
+}: { 
+  children: React.ReactNode
+  sectionKey: string 
+}) {
+  const [isVisible, setIsVisible] = useState(false)
+
+  useEffect(() => {
+    setIsVisible(false)
+    const timer = requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        setIsVisible(true)
+      })
+    })
+    return () => cancelAnimationFrame(timer)
+  }, [sectionKey])
+
+  return (
+    <div
+      style={{
+        opacity: isVisible ? 1 : 0,
+        transform: isVisible ? 'translateY(0)' : 'translateY(10px)',
+        transition: 'opacity 0.35s cubic-bezier(.22,1,.36,1), transform 0.35s cubic-bezier(.22,1,.36,1)'
+      }}
+    >
+      {children}
+    </div>
+  )
+}
 
 function SectionPlaceholder({ 
   title, 
@@ -49,116 +84,122 @@ function SectionPlaceholder({
 function DashboardContent() {
   const { activeSection } = useNav()
 
-  switch (activeSection) {
-    case "home":
-      return (
-        <>
-          {/* 1. Greeting - Always first */}
-          <HomeGreeting />
-          
-          {/* 2. Health Intelligence Summary - Dominant insight */}
-          <HealthIntelligence />
-          
-          {/* 3. Supporting Context - Clearly secondary (80% decision / 20% context) */}
-          <div className="opacity-75">
-            <MeridianScore 
-              score={62} 
-              recovery="Moderate" 
-              load="Manage" 
-              nextStep="Walk + protein" 
-            />
-            <TodayStrategy />
-            <TodayFlow />
-            <SystemWatchlist />
-          </div>
-        </>
-      )
-    case "explore":
-      return (
-        <section className="px-4 py-6 lg:px-6">
-          <h1 className="text-xl font-semibold text-foreground mb-6">Explore</h1>
-          <ExplorePage />
-        </section>
-      )
-    case "insights":
-      return (
-        <section className="px-4 py-6 lg:px-6">
-          <h1 className="text-xl font-semibold text-foreground mb-6">Insights</h1>
-          <InsightsPage />
-        </section>
-      )
-    case "methods":
-      return (
-        <section className="px-4 py-6 lg:px-6">
-          <h1 className="text-xl font-semibold text-foreground mb-6">Methods</h1>
-          <MethodsPage />
-        </section>
-      )
-    case "profile":
-      return (
-        <section className="px-4 py-6 lg:px-6">
-          <h1 className="text-xl font-semibold text-foreground mb-6">Profile</h1>
-          <ProfilePage />
-        </section>
-      )
-    case "sleep":
-      return (
-        <SectionPlaceholder 
-          title="Sleep Analysis" 
-          icon={Moon}
-          description="Track your sleep patterns, REM cycles, and recovery metrics. Connect your wearable to see detailed insights."
-        />
-      )
-    case "activity":
-      return (
-        <SectionPlaceholder 
-          title="Activity Tracking" 
-          icon={Activity}
-          description="Monitor your daily movement, workouts, and exercise intensity. See how your activity affects your recovery."
-        />
-      )
-    case "labs":
-      return (
-        <section className="px-4 py-6 lg:px-6">
-          <h1 className="text-xl font-semibold text-foreground mb-6">Labs</h1>
-          <LabsPage />
-        </section>
-      )
-    case "body":
-      return (
-        <SectionPlaceholder 
-          title="Body Composition" 
-          icon={User}
-          description="Track your weight, body fat percentage, muscle mass, and other body metrics."
-        />
-      )
-    case "hormones":
-      return (
-        <SectionPlaceholder 
-          title="Hormone Health" 
-          icon={Heart}
-          description="Monitor your hormone levels and understand how they impact your energy, mood, and recovery."
-        />
-      )
-    case "method":
-      return (
-        <SectionPlaceholder 
-          title="Method Adherence" 
-          icon={Beaker}
-          description="Track your supplement stack, protocols, and health routines for optimal results."
-        />
-      )
-    case "action-plan":
-      return (
-        <SectionPlaceholder 
-          title="Action Plan" 
-          icon={ListTodo}
-          description="Your personalized daily actions and recommendations based on your health data."
-        />
-      )
-    default:
-      return null
+  const renderContent = () => {
+    switch (activeSection) {
+      case "home":
+        return (
+          <>
+            {/* 1. Greeting - Always first */}
+            <HomeGreeting />
+            
+            {/* 2. Health Intelligence Summary - Dominant insight */}
+            <HealthIntelligence />
+            
+            {/* 3. Supporting Context - Clearly secondary (80% decision / 20% context) */}
+            <div className="opacity-75">
+              <MeridianScore 
+                score={62} 
+                recovery="Moderate" 
+                load="Manage" 
+                nextStep="Walk + protein" 
+              />
+              <TodayStrategy />
+              <TodayFlow />
+              <SystemWatchlist />
+            </div>
+          </>
+        )
+      case "explore":
+        return (
+          <section className="px-4 py-6 lg:px-6">
+            <h1 className="text-xl font-semibold text-foreground mb-6">Explore</h1>
+            <ExplorePage />
+          </section>
+        )
+      case "insights":
+        return (
+          <section className="px-4 py-6 lg:px-6">
+            <h1 className="text-xl font-semibold text-foreground mb-6">Insights</h1>
+            <InsightsPage />
+          </section>
+        )
+      case "methods":
+        return (
+          <section className="px-4 py-6 lg:px-6">
+            <h1 className="text-xl font-semibold text-foreground mb-6">Methods</h1>
+            <MethodsPage />
+          </section>
+        )
+      case "profile":
+        return (
+          <section className="px-4 py-6 lg:px-6">
+            <h1 className="text-xl font-semibold text-foreground mb-6">Profile</h1>
+            <ProfilePage />
+          </section>
+        )
+      case "sleep":
+        return (
+          <section className="px-4 py-6 lg:px-6">
+            <h1 className="text-xl font-semibold text-foreground mb-6">Sleep Analysis</h1>
+            <SleepPage />
+          </section>
+        )
+      case "activity":
+        return (
+          <section className="px-4 py-6 lg:px-6">
+            <h1 className="text-xl font-semibold text-foreground mb-6">Activity</h1>
+            <ActivityPage />
+          </section>
+        )
+      case "labs":
+        return (
+          <section className="px-4 py-6 lg:px-6">
+            <h1 className="text-xl font-semibold text-foreground mb-6">Labs</h1>
+            <LabsPage />
+          </section>
+        )
+      case "body":
+        return (
+          <SectionPlaceholder 
+            title="Body Composition" 
+            icon={User}
+            description="Track your weight, body fat percentage, muscle mass, and other body metrics."
+          />
+        )
+      case "hormones":
+        return (
+          <SectionPlaceholder 
+            title="Hormone Health" 
+            icon={Heart}
+            description="Monitor your hormone levels and understand how they impact your energy, mood, and recovery."
+          />
+        )
+      case "method":
+        return (
+          <SectionPlaceholder 
+            title="Method Adherence" 
+            icon={Beaker}
+            description="Track your supplement stack, protocols, and health routines for optimal results."
+          />
+        )
+      case "action-plan":
+        return (
+          <SectionPlaceholder 
+            title="Action Plan" 
+            icon={ListTodo}
+            description="Your personalized daily actions and recommendations based on your health data."
+          />
+        )
+      default:
+        return null
+    }
   }
+
+  return (
+    <PageTransition sectionKey={activeSection}>
+      {renderContent()}
+    </PageTransition>
+  )
 }
 
 export default function MeridianDashboard() {

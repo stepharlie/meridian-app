@@ -62,20 +62,17 @@ export function HomeGreeting({ userName }: { userName?: string }) {
     return () => clearInterval(interval)
   }, [])
 
-  const GreetingIcon = timeGreeting.icon
-
   return (
     <section className="px-4 pt-6 pb-2 lg:px-6">
-      {/* Greeting */}
-      <h1 className="text-2xl sm:text-3xl font-semibold text-foreground mb-2 text-balance flex items-center gap-3">
-        <GreetingIcon className="w-7 h-7 sm:w-8 sm:h-8 text-primary flex-shrink-0" />
-        <span>{mounted ? timeGreeting.greeting : defaultGreeting.greeting}{userName ? `, ${userName}` : ""}</span>
-      </h1>
-      
-      {/* Contextual subtitle */}
-      <p className="text-sm text-muted-foreground leading-relaxed pl-10 sm:pl-11">
+      <div style={{ fontSize: '11px', fontWeight: 800, letterSpacing: '0.11em', textTransform: 'uppercase', color: '#2DD4BF', marginBottom: '12px' }}>
         {mounted ? timeGreeting.contextLine : defaultGreeting.contextLine}
-      </p>
+      </div>
+      <h1 style={{ fontFamily: "'Fraunces', serif", fontSize: 'clamp(32px, 5vw, 52px)', fontWeight: 700, letterSpacing: '-0.05em', lineHeight: 1.05, marginBottom: '6px', color: '#EAFBF7' }}>
+        {mounted ? timeGreeting.greeting : defaultGreeting.greeting},{" "}
+        <em style={{ fontStyle: 'normal', background: 'linear-gradient(135deg, #FFFFFF 0%, #67E8F9 44%, #2DD4BF 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+          {userName || "Stephanie"}
+        </em>
+      </h1>
     </section>
   )
 }

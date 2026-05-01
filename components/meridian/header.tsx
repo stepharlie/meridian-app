@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect, useRef } from "react"
 import { Menu, Home, BarChart3, Beaker, User, X, Moon, Activity, FlaskConical, Heart, ListTodo } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { useNav, NavSection } from "./nav-context"
@@ -41,7 +41,45 @@ const sidebarSections: { label: string; items: NavItem[] }[] = [
 
 export function MeridianHeader() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const [isCompact, setIsCompact] = useState(false)
+  const [isHidden, setIsHidden] = useState(false)
   const { activeSection, setActiveSection, navigateToLabs } = useNav()
+  
+  const lastScrollY = useRef(0)
+  const ticking = useRef(false)
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (!ticking.current) {
+        requestAnimationFrame(() => {
+          const currentScrollY = window.scrollY
+          
+          // Compact mode after 30px
+          setIsCompact(currentScrollY > 30)
+          
+          // Hide/show based on scroll direction after 80px
+          if (currentScrollY > 80) {
+            if (currentScrollY > lastScrollY.current) {
+              // Scrolling down
+              setIsHidden(true)
+            } else {
+              // Scrolling up
+              setIsHidden(false)
+            }
+          } else {
+            setIsHidden(false)
+          }
+          
+          lastScrollY.current = currentScrollY
+          ticking.current = false
+        })
+        ticking.current = true
+      }
+    }
+
+    window.addEventListener("scroll", handleScroll, { passive: true })
+    return () => window.removeEventListener("scroll", handleScroll)
+  }, [])
 
   const handleNavClick = (sectionId: NavSection) => {
     // Scroll to top first for smooth transition
@@ -56,26 +94,66 @@ export function MeridianHeader() {
 
   return (
     <>
-      <header className="sticky top-0 z-50 glass border-b border-border/50">
-        <div className="flex items-center justify-between px-4 py-3 lg:px-6">
+      <header 
+        className={cn(
+          "sticky top-0 z-50 glass border-b border-border/50",
+          isCompact && "compact"
+        )}
+        style={{
+          transition: 'transform 0.38s cubic-bezier(.22,1,.36,1), padding 0.38s cubic-bezier(.22,1,.36,1)',
+          transform: isHidden ? 'translateY(-100%)' : 'translateY(0)'
+        }}
+      >
+        <div 
+          className="flex items-center justify-between px-4 lg:px-6"
+          style={{
+            transition: 'padding 0.38s cubic-bezier(.22,1,.36,1)',
+            paddingTop: isCompact ? '8px' : '12px',
+            paddingBottom: isCompact ? '8px' : '12px'
+          }}
+        >
           {/* Logo */}
           <div className="flex items-center gap-3">
-            <div className="flex items-center justify-center w-9 h-9 rounded-lg bg-primary/10 border border-primary/20">
-              <svg 
-                viewBox="0 0 24 24" 
-                fill="none" 
-                className="w-5 h-5 text-primary"
-                stroke="currentColor" 
-                strokeWidth="2"
-              >
-                <path d="M12 2L2 7l10 5 10-5-10-5z" />
-                <path d="M2 17l10 5 10-5" />
-                <path d="M2 12l10 5 10-5" />
-              </svg>
+            <div className="flex items-center justify-center w-10 h-10 rounded-[18px] flex-shrink-0"
+              style={{
+                background: 'linear-gradient(145deg, rgba(45,212,191,0.16), rgba(103,232,249,0.08))',
+                border: '1px solid rgba(103,232,249,0.20)',
+                boxShadow: '0 0 24px rgba(45,212,191,0.12), inset 0 1px 0 rgba(255,255,255,0.08)'
+              }}>
+              <span style={{
+                fontFamily: "'Fraunces', serif",
+                fontSize: '28px',
+                fontWeight: 700,
+                lineHeight: 0.85,
+                letterSpacing: '-0.06em',
+                background: 'linear-gradient(135deg, #FFFFFF 0%, #67E8F9 40%, #2DD4BF 100%)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                transform: 'translateY(-1px)',
+                display: 'block'
+              }}>M</span>
             </div>
             <div>
-              <span className="text-lg font-semibold tracking-tight text-foreground">Meridian</span>
-              <span className="hidden sm:inline text-xs text-muted-foreground ml-2 uppercase tracking-widest">Health Intelligence</span>
+              <span style={{ fontFamily: "'Fraunces', serif", fontSize: '18px', fontWeight: 700, letterSpacing: '-0.04em', color: '#EAFBF7' }}>
+                Meridian
+              </span>
+              <span 
+                className="hidden sm:block" 
+                style={{ 
+                  fontSize: '10px', 
+                  fontWeight: 700, 
+                  letterSpacing: '0.12em', 
+                  textTransform: 'uppercase', 
+                  color: '#5F8E85', 
+                  marginTop: '1px',
+                  transition: 'opacity 0.38s cubic-bezier(.22,1,.36,1), max-height 0.38s cubic-bezier(.22,1,.36,1)',
+                  opacity: isCompact ? 0 : 1,
+                  maxHeight: isCompact ? 0 : '20px',
+                  overflow: 'hidden'
+                }}
+              >
+                Health Intelligence
+              </span>
             </div>
           </div>
 
@@ -119,20 +197,26 @@ export function MeridianHeader() {
           <nav className="absolute left-0 top-0 bottom-0 w-72 bg-sidebar border-r border-sidebar-border p-4 overflow-y-auto animate-in slide-in-from-left duration-200">
             <div className="flex items-center justify-between mb-8">
               <div className="flex items-center gap-3">
-                <div className="flex items-center justify-center w-9 h-9 rounded-lg bg-primary/10 border border-primary/20">
-                  <svg 
-                    viewBox="0 0 24 24" 
-                    fill="none" 
-                    className="w-5 h-5 text-primary"
-                    stroke="currentColor" 
-                    strokeWidth="2"
-                  >
-                    <path d="M12 2L2 7l10 5 10-5-10-5z" />
-                    <path d="M2 17l10 5 10-5" />
-                    <path d="M2 12l10 5 10-5" />
-                  </svg>
+                <div className="flex items-center justify-center w-10 h-10 rounded-[18px] flex-shrink-0"
+                  style={{
+                    background: 'linear-gradient(145deg, rgba(45,212,191,0.16), rgba(103,232,249,0.08))',
+                    border: '1px solid rgba(103,232,249,0.20)',
+                    boxShadow: '0 0 24px rgba(45,212,191,0.12), inset 0 1px 0 rgba(255,255,255,0.08)'
+                  }}>
+                  <span style={{
+                    fontFamily: "'Fraunces', serif",
+                    fontSize: '28px',
+                    fontWeight: 700,
+                    lineHeight: 0.85,
+                    letterSpacing: '-0.06em',
+                    background: 'linear-gradient(135deg, #FFFFFF 0%, #67E8F9 40%, #2DD4BF 100%)',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                    transform: 'translateY(-1px)',
+                    display: 'block'
+                  }}>M</span>
                 </div>
-                <span className="text-lg font-semibold">Meridian</span>
+                <span style={{ fontFamily: "'Fraunces', serif", fontSize: '18px', fontWeight: 700, letterSpacing: '-0.04em', color: '#EAFBF7' }}>Meridian</span>
               </div>
               <button
                 onClick={() => setMobileMenuOpen(false)}

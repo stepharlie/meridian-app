@@ -28,24 +28,24 @@ const tabs: { id: string; label: string; icon: typeof Activity; navTo?: NavSecti
 
 const tabContent: Record<string, { signal: string; lever: string; watch: string }> = {
   recovery: {
-    signal: "HRV is low and readiness looks moderate, so the goal is to preserve energy instead of forcing intensity.",
-    lever: "The highest-return action is simple: hit protein early and walk enough to lower stress without adding load.",
-    watch: "Tonight&apos;s PM Method is the easiest way to protect tomorrow&apos;s score.",
+    signal: "TSH is elevated at 3.03 (ideal <2.5) and HRV is only 19ms — your nervous system is under load. Sleep score hit 75, and you're on cycle day 18 in luteal phase when cortisol sensitivity is higher.",
+    lever: "Today is a recovery day. Prioritize protein at every meal, light movement only, and complete your PM stack to support thyroid and sleep.",
+    watch: "Avoid high-intensity training until HRV recovers above 30ms. Evening magnesium and selenium support both thyroid and sleep quality.",
   },
   labs: {
-    signal: "TSH is trending higher at 3.03, suggesting thyroid function may need monitoring.",
-    lever: "Focus on selenium-rich foods and adequate iodine to support thyroid health naturally.",
-    watch: "Schedule a follow-up lab panel in 4-6 weeks to track the trend.",
+    signal: "TSH at 3.03 is elevated — ideal is under 2.5. Combined with low HRV (19ms), this suggests your thyroid and nervous system are both signaling stress.",
+    lever: "Focus on selenium-rich foods (brazil nuts, sardines) and ensure adequate iodine. Avoid over-exercising which can further suppress thyroid function.",
+    watch: "Retest TSH in 6 weeks. If it stays above 2.5, consider a full thyroid panel including Free T3 and T4.",
   },
   activity: {
-    signal: "Step count is at 70% of daily goal. NEAT is your most accessible lever today.",
-    lever: "Add a 15-minute walk after each meal to hit your 7,000 step target without added stress.",
-    watch: "Keep heart rate under 120bpm during movement to stay in recovery zone.",
+    signal: "With HRV at 19ms and TSH elevated, your body is asking for rest. Luteal phase (day 18) means progesterone is high and recovery capacity is reduced.",
+    lever: "Cap activity at light walking today — aim for 5,000 steps max. Save higher intensity for follicular phase when HRV rebounds.",
+    watch: "Keep heart rate under 110bpm during any movement. Higher intensity today will deepen the recovery debt.",
   },
   method: {
-    signal: "PM stack completion has been inconsistent this week, affecting sleep quality.",
-    lever: "Set a reminder for 9pm to start your wind-down routine and complete evening supplements.",
-    watch: "Magnesium and glycine timing impacts sleep onset latency.",
+    signal: "Your PM stack is critical tonight. Low HRV and elevated TSH both respond to quality sleep, and your 75 sleep score has room to improve.",
+    lever: "Complete magnesium glycinate, glycine, and selenium by 9pm. These directly support both thyroid conversion and sleep architecture.",
+    watch: "Caffeine cutoff by 12pm is non-negotiable with these numbers. Evening blue light exposure will further suppress melatonin.",
   },
 }
 
@@ -121,7 +121,7 @@ export function MorningSignal({ userName = "Stephanie" }: { userName?: string })
       </div>
 
       <p className="text-sm text-muted-foreground mb-6 text-pretty">
-        Today favors controlled output, steady protein, and a calm evening routine.
+        TSH is elevated this season and HRV is low — your nervous system is under load. Today is a recovery day. Prioritize protein, light movement, and your PM stack.
       </p>
 
       {/* Tabs */}
@@ -159,9 +159,9 @@ export function MorningSignal({ userName = "Stephanie" }: { userName?: string })
             <h3 className="text-xs font-semibold text-primary uppercase tracking-wider">Primary Signal</h3>
           </div>
           <p className="text-sm font-medium text-foreground leading-relaxed text-pretty mb-2">
-            {activeTab === "recovery" ? "Recovery needs support" : 
-             activeTab === "labs" ? "Thyroid trend to watch" :
-             activeTab === "activity" ? "Step goal in reach" : "PM stack pending"}
+            {activeTab === "recovery" ? "TSH 3.03 + HRV 19ms = recovery day" : 
+             activeTab === "labs" ? "TSH elevated, thyroid under stress" :
+             activeTab === "activity" ? "Luteal phase + low HRV = rest" : "PM stack critical tonight"}
           </p>
           <p className="text-xs text-muted-foreground leading-relaxed">{content.signal}</p>
         </div>
@@ -172,9 +172,9 @@ export function MorningSignal({ userName = "Stephanie" }: { userName?: string })
             <h3 className="text-xs font-semibold text-accent uppercase tracking-wider">Best Lever</h3>
           </div>
           <p className="text-sm font-medium text-foreground leading-relaxed text-pretty mb-2">
-            {activeTab === "recovery" ? "Protein + light movement" :
-             activeTab === "labs" ? "Selenium-rich foods" :
-             activeTab === "activity" ? "Post-meal walks" : "9pm reminder"}
+            {activeTab === "recovery" ? "Protein + PM stack + light walk" :
+             activeTab === "labs" ? "Selenium + iodine support" :
+             activeTab === "activity" ? "5K steps max, HR under 110" : "Mag, glycine, selenium by 9pm"}
           </p>
           <p className="text-xs text-muted-foreground leading-relaxed">{content.lever}</p>
         </div>
@@ -185,9 +185,9 @@ export function MorningSignal({ userName = "Stephanie" }: { userName?: string })
             <h3 className="text-xs font-semibold text-chart-5 uppercase tracking-wider">Watch Today</h3>
           </div>
           <p className="text-sm font-medium text-foreground leading-relaxed text-pretty mb-2">
-            {activeTab === "recovery" ? "HRV + evening routine" :
-             activeTab === "labs" ? "Follow-up timing" :
-             activeTab === "activity" ? "Heart rate zone" : "Supplement timing"}
+            {activeTab === "recovery" ? "No HIIT until HRV > 30ms" :
+             activeTab === "labs" ? "Retest TSH in 6 weeks" :
+             activeTab === "activity" ? "Intensity deepens recovery debt" : "Caffeine cutoff 12pm"}
           </p>
           <p className="text-xs text-muted-foreground leading-relaxed">{content.watch}</p>
         </div>
