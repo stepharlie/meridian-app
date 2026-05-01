@@ -94,22 +94,34 @@ export function MeridianHeader() {
 
   return (
     <>
-      <header 
-        className={cn(
-          "sticky top-0 z-50 glass border-b border-border/50",
-          isCompact && "compact"
-        )}
+      <div
+        className="sticky top-0 z-50 px-4 lg:px-6"
         style={{
-          transition: 'transform 0.38s cubic-bezier(.22,1,.36,1), padding 0.38s cubic-bezier(.22,1,.36,1)',
-          transform: isHidden ? 'translateY(-100%)' : 'translateY(0)'
+          paddingTop: '12px',
+          paddingBottom: isCompact ? '6px' : '8px',
+          transition: 'transform 0.4s cubic-bezier(.22,1,.36,1), opacity 0.3s ease',
+          transform: isHidden ? 'translateY(calc(-100% - 20px))' : 'translateY(0)',
+          opacity: isHidden ? 0 : 1,
         }}
       >
-        <div 
+      <header
+        className={cn("glass", isCompact && "compact")}
+        style={{
+          borderRadius: '24px',
+          border: '1px solid rgba(103,232,249,0.13)',
+          background: isCompact ? 'rgba(4,14,16,0.88)' : 'rgba(4,14,16,0.72)',
+          backdropFilter: 'blur(28px)',
+          WebkitBackdropFilter: 'blur(28px)',
+          boxShadow: '0 8px 40px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.05)',
+          transition: 'background 0.38s cubic-bezier(.22,1,.36,1), border-radius 0.38s cubic-bezier(.22,1,.36,1)',
+        }}
+      >
+        <div
           className="flex items-center justify-between px-4 lg:px-6"
           style={{
             transition: 'padding 0.38s cubic-bezier(.22,1,.36,1)',
-            paddingTop: isCompact ? '8px' : '12px',
-            paddingBottom: isCompact ? '8px' : '12px'
+            paddingTop: isCompact ? '10px' : '14px',
+            paddingBottom: isCompact ? '10px' : '14px',
           }}
         >
           {/* Logo */}
@@ -186,6 +198,7 @@ export function MeridianHeader() {
           </button>
         </div>
       </header>
+      </div>
 
       {/* Mobile Menu Overlay */}
       {mobileMenuOpen && (

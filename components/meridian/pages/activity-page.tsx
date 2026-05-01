@@ -106,34 +106,45 @@ const muscleGroups = [
   { group: "Core / Abs",          load: 10, status: "Not tracked",          color: "bg-primary/30",  statusColor: "text-muted-foreground" },
 ]
 
-// ── COMPONENT ─────────────────────────────────────────────────────────────────
-
 export function ActivityPage() {
-  return (
-    <div className="space-y-6">
+  const cardStyle = {
+    background: 'rgba(232,248,245,0.055)',
+    border: '1px solid rgba(103,232,249,0.13)',
+    backdropFilter: 'blur(20px)',
+    WebkitBackdropFilter: 'blur(20px)',
+    borderRadius: '18px',
+  }
 
-      {/* Metric Cards — 2-col grid */}
+  const insightStyle = {
+    background: 'rgba(45,212,191,0.07)',
+    border: '1px solid rgba(45,212,191,0.22)',
+    borderLeft: '4px solid #2DD4BF',
+    borderRadius: '18px',
+    padding: '20px',
+  }
+
+  return (
+    <div className="space-y-5">
+
+      {/* Metric Cards */}
       <div className="grid grid-cols-2 gap-3">
         {activityMetrics.map((m) => (
-          <div key={m.label} className="p-4 rounded-xl bg-card border border-border/50">
+          <div key={m.label} style={cardStyle} className="p-4">
             <div className="flex items-center gap-2 mb-2">
               <div className={cn("w-8 h-8 rounded-lg flex items-center justify-center", m.bgColor)}>
                 <m.icon className={cn("w-4 h-4", m.color)} />
               </div>
             </div>
-            <p className="text-xs text-muted-foreground mb-0.5">{m.label}</p>
-            <span
-              className="text-xl font-semibold text-foreground tabular-nums"
-              style={{ fontFamily: "'Fraunces', serif" }}
-            >
+            <p className="text-xs mb-0.5" style={{ color: '#9ACBC1' }}>{m.label}</p>
+            <span className="text-xl font-semibold tabular-nums" style={{ fontFamily: "'Fraunces', serif", color: '#EAFBF7' }}>
               {m.value}
             </span>
             <div className="flex items-center gap-1 mt-1">
               <span className={cn("text-xs font-bold", m.trendColor)}>{m.trend}</span>
-              <span className="text-[10px] text-muted-foreground">{m.trendLabel}</span>
+              <span className="text-[10px]" style={{ color: '#5F8E85' }}>{m.trendLabel}</span>
             </div>
-            <p className="text-[10px] text-muted-foreground mt-1">{m.sub}</p>
-            <div className="mt-2 h-1 rounded-full bg-secondary overflow-hidden">
+            <p className="text-[10px] mt-1" style={{ color: '#5F8E85' }}>{m.sub}</p>
+            <div className="mt-2 h-1 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.06)' }}>
               <div
                 className={cn("h-full rounded-full transition-all duration-700", m.color.replace("text-", "bg-"))}
                 style={{ width: `${m.progress}%` }}
@@ -145,115 +156,108 @@ export function ActivityPage() {
 
       {/* Weekly Steps Chart */}
       <section>
-        <div className="flex items-center gap-2 mb-4">
-          <Footprints className="w-4 h-4 text-primary" />
-          <h2 className="text-sm font-semibold text-foreground uppercase tracking-wider">Weekly Steps — 12 Weeks</h2>
+        <div className="flex items-center gap-2 mb-3">
+          <Footprints className="w-4 h-4" style={{ color: '#2DD4BF' }} />
+          <h2 className="text-xs font-bold uppercase tracking-wider" style={{ color: '#9ACBC1' }}>Weekly Steps — 12 Weeks</h2>
         </div>
-        <div className="p-4 rounded-xl bg-card border border-border/50">
-          <div className="flex items-end justify-between gap-1 h-28 mb-3">
+        <div style={cardStyle} className="p-4">
+          <div className="flex items-end justify-between gap-1 h-24 mb-3">
             {weeklySteps.map((w) => (
               <div key={w.week} className="flex-1 flex flex-col items-center gap-1">
                 <div
-                  className={cn(
-                    "w-full rounded-t-sm transition-all duration-500",
-                    w.steps < 25000 ? "bg-chart-4" : "bg-primary"
-                  )}
-                  style={{ height: `${w.pct * 2}px` }}
+                  className="w-full rounded-t-sm transition-all duration-500"
+                  style={{
+                    height: `${w.pct * 2}px`,
+                    background: w.steps < 25000 ? '#F87171' : '#2DD4BF',
+                    boxShadow: w.steps < 25000 ? '0 0 5px rgba(248,113,113,0.4)' : 'none',
+                  }}
                 />
-                <span className="text-[9px] text-muted-foreground">{w.week}</span>
+                <span className="text-[9px]" style={{ color: '#5F8E85' }}>{w.week}</span>
               </div>
             ))}
           </div>
-          <div className="flex items-center gap-4 pt-3 border-t border-border/50">
+          <div className="flex items-center gap-4 pt-3" style={{ borderTop: '1px solid rgba(103,232,249,0.10)' }}>
             <div className="flex items-center gap-2">
-              <div className="w-3 h-3 rounded-sm bg-primary" />
-              <span className="text-xs text-muted-foreground">25k+</span>
+              <div className="w-2.5 h-2.5 rounded-sm" style={{ background: '#2DD4BF' }} />
+              <span className="text-xs" style={{ color: '#9ACBC1' }}>25k+</span>
             </div>
             <div className="flex items-center gap-2">
-              <div className="w-3 h-3 rounded-sm bg-chart-4" />
-              <span className="text-xs text-muted-foreground">Below 25k</span>
+              <div className="w-2.5 h-2.5 rounded-sm" style={{ background: '#F87171' }} />
+              <span className="text-xs" style={{ color: '#9ACBC1' }}>Below 25k</span>
             </div>
-            <span className="text-xs text-muted-foreground ml-auto">Goal: 49k / week</span>
+            <span className="text-xs ml-auto" style={{ color: '#5F8E85' }}>Goal: 49k / week</span>
           </div>
         </div>
       </section>
 
       {/* Muscle Load */}
       <section>
-        <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
-            <Zap className="w-4 h-4 text-amber-400" />
-            <h2 className="text-sm font-semibold text-foreground uppercase tracking-wider">Muscle Load — 4 Weeks</h2>
+            <Zap className="w-4 h-4" style={{ color: '#FCD34D' }} />
+            <h2 className="text-xs font-bold uppercase tracking-wider" style={{ color: '#9ACBC1' }}>Muscle Load — 4 Weeks</h2>
           </div>
-          <span className="text-[10px] text-muted-foreground">16 strength sessions</span>
+          <span className="text-[10px]" style={{ color: '#5F8E85' }}>16 sessions</span>
         </div>
-        <div className="p-4 rounded-xl bg-card border border-border/50 space-y-4">
+        <div style={cardStyle} className="p-4 space-y-4">
           {muscleGroups.map((mg) => (
             <div key={mg.group}>
               <div className="flex justify-between items-baseline mb-1.5">
-                <span className="text-sm font-medium text-foreground">{mg.group}</span>
+                <span className="text-sm font-medium" style={{ color: '#EAFBF7' }}>{mg.group}</span>
                 <span className={cn("text-xs font-semibold", mg.statusColor)}>{mg.status}</span>
               </div>
-              <div className="h-2 rounded-full bg-secondary overflow-hidden">
+              <div className="h-1.5 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.06)' }}>
                 <div
                   className={cn("h-full rounded-full transition-all duration-700", mg.color)}
                   style={{
                     width: `${mg.load}%`,
-                    boxShadow: mg.load > 70 ? `0 0 8px rgba(248,113,113,0.5)` : "none",
+                    boxShadow: mg.load > 70 ? '0 0 8px rgba(248,113,113,0.5)' : 'none',
                   }}
                 />
               </div>
             </div>
           ))}
-          <p className="text-[10px] text-muted-foreground pt-2 border-t border-border/50">
+          <p className="text-[10px] pt-2" style={{ color: '#5F8E85', borderTop: '1px solid rgba(103,232,249,0.10)' }}>
             Based on exercise type, duration, and HR from Garmin sessions
           </p>
         </div>
       </section>
 
-      {/* Fitness Age Context */}
+      {/* Fitness Age */}
       <section>
-        <div className="flex items-center gap-2 mb-4">
-          <TrendingUp className="w-4 h-4 text-primary" />
-          <h2 className="text-sm font-semibold text-foreground uppercase tracking-wider">Fitness Age Timeline</h2>
+        <div className="flex items-center gap-2 mb-3">
+          <TrendingUp className="w-4 h-4" style={{ color: '#2DD4BF' }} />
+          <h2 className="text-xs font-bold uppercase tracking-wider" style={{ color: '#9ACBC1' }}>Fitness Age Timeline</h2>
         </div>
         <div className="grid grid-cols-3 gap-3">
-          <div className="p-4 rounded-xl bg-card border border-border/50 text-center">
-            <p className="text-xs text-muted-foreground mb-1">Best (Jun–Jul 25)</p>
-            <span
-              className="text-2xl font-bold text-emerald-400"
-              style={{ fontFamily: "'Fraunces', serif" }}
-            >32</span>
-            <p className="text-[10px] text-muted-foreground mt-1">530 min / week</p>
-          </div>
-          <div className="p-4 rounded-xl bg-card border border-primary/30 text-center" style={{ background: "rgba(45,212,191,0.06)" }}>
-            <p className="text-xs text-muted-foreground mb-1">Now</p>
-            <span
-              className="text-2xl font-bold text-red-400"
-              style={{ fontFamily: "'Fraunces', serif" }}
-            >34.5</span>
-            <p className="text-[10px] text-muted-foreground mt-1">15 min / week</p>
-          </div>
-          <div className="p-4 rounded-xl bg-card border border-border/50 text-center">
-            <p className="text-xs text-muted-foreground mb-1">Potential</p>
-            <span
-              className="text-2xl font-bold text-primary"
-              style={{ fontFamily: "'Fraunces', serif" }}
-            >31</span>
-            <p className="text-[10px] text-muted-foreground mt-1">75+ min / week</p>
-          </div>
+          {[
+            { label: 'Best (Jun–Jul 25)', val: '32', color: '#4ADE80', sub: '530 min / week' },
+            { label: 'Now', val: '34.5', color: '#F87171', sub: '15 min / week', highlight: true },
+            { label: 'Potential', val: '31', color: '#2DD4BF', sub: '75+ min / week' },
+          ].map(({ label, val, color, sub, highlight }) => (
+            <div key={label} style={{
+              ...cardStyle,
+              ...(highlight ? { border: '1px solid rgba(45,212,191,0.25)', background: 'rgba(45,212,191,0.06)' } : {}),
+              padding: '16px',
+              textAlign: 'center',
+            }}>
+              <p className="text-xs mb-1" style={{ color: '#9ACBC1' }}>{label}</p>
+              <span className="text-2xl font-bold" style={{ fontFamily: "'Fraunces', serif", color }}>{val}</span>
+              <p className="text-[10px] mt-1" style={{ color: '#5F8E85' }}>{sub}</p>
+            </div>
+          ))}
         </div>
       </section>
 
       {/* Meridian Insight */}
-      <section className="p-4 rounded-xl bg-gradient-to-br from-primary/10 to-accent/10 border border-primary/20">
+      <section style={insightStyle}>
         <div className="flex items-start gap-3">
-          <div className="flex-shrink-0 w-10 h-10 rounded-xl bg-primary/20 flex items-center justify-center">
-            <Activity className="w-5 h-5 text-primary" />
+          <div className="flex-shrink-0 w-9 h-9 rounded-xl flex items-center justify-center" style={{ background: 'rgba(45,212,191,0.12)' }}>
+            <Activity className="w-4 h-4" style={{ color: '#2DD4BF' }} />
           </div>
           <div>
-            <h3 className="text-sm font-semibold text-foreground mb-1">Meridian Insight</h3>
-            <p className="text-xs text-muted-foreground leading-relaxed">
+            <div style={{ fontSize: '10px', fontWeight: 800, color: '#2DD4BF', textTransform: 'uppercase', letterSpacing: '0.09em', marginBottom: '6px' }}>Meridian Insight</div>
+            <p className="text-xs leading-relaxed" style={{ color: '#EAFBF7' }}>
               Your glutes and hamstrings are highly loaded — rest or pivot to chest and arms today.
               At 15 intensity minutes this week vs a goal of 75, adding two 20-minute zone 2 sessions
               (fast walk or bike) would be the single highest-impact change for your HDL, VO2 Max, and Fitness Age.

@@ -24,28 +24,35 @@ const weekendAvg = "8h 23m"
 export function SleepPage() {
   const totalDuration = sleepPhases.reduce((sum, p) => sum + p.duration, 0)
 
+  const cardStyle = {
+    background: 'rgba(232,248,245,0.055)',
+    border: '1px solid rgba(103,232,249,0.13)',
+    backdropFilter: 'blur(20px)',
+    WebkitBackdropFilter: 'blur(20px)',
+    borderRadius: '18px',
+  }
+
+  const insightStyle = {
+    background: 'rgba(45,212,191,0.07)',
+    border: '1px solid rgba(45,212,191,0.22)',
+    borderLeft: '4px solid #2DD4BF',
+    borderRadius: '18px',
+    padding: '20px',
+  }
+
   return (
-    <div className="space-y-6">
+    <div className="space-y-5">
       {/* Metric Cards */}
       <div className="grid grid-cols-2 gap-3">
         {sleepMetrics.map((metric) => (
-          <div
-            key={metric.label}
-            className="p-4 rounded-xl bg-card border border-border/50"
-          >
+          <div key={metric.label} style={cardStyle} className="p-4">
             <div className="flex items-center gap-2 mb-2">
-              <div className={cn(
-                "w-8 h-8 rounded-lg flex items-center justify-center",
-                metric.bgColor
-              )}>
+              <div className={cn("w-8 h-8 rounded-lg flex items-center justify-center", metric.bgColor)}>
                 <metric.icon className={cn("w-4 h-4", metric.color)} />
               </div>
             </div>
-            <p className="text-xs text-muted-foreground mb-0.5">{metric.label}</p>
-            <span 
-              className="text-xl font-semibold text-foreground tabular-nums"
-              style={{ fontFamily: "'Fraunces', serif" }}
-            >
+            <p className="text-xs mb-0.5" style={{ color: '#9ACBC1' }}>{metric.label}</p>
+            <span className="text-xl font-semibold tabular-nums" style={{ fontFamily: "'Fraunces', serif", color: '#EAFBF7' }}>
               {metric.value}
             </span>
           </div>
@@ -54,29 +61,22 @@ export function SleepPage() {
 
       {/* Sleep Phases Bar */}
       <section>
-        <div className="flex items-center gap-2 mb-4">
-          <Moon className="w-4 h-4 text-primary" />
-          <h2 className="text-sm font-semibold text-foreground uppercase tracking-wider">Sleep Phases</h2>
+        <div className="flex items-center gap-2 mb-3">
+          <Moon className="w-4 h-4" style={{ color: '#2DD4BF' }} />
+          <h2 className="text-xs font-bold uppercase tracking-wider" style={{ color: '#9ACBC1' }}>Sleep Phases</h2>
         </div>
-        
-        <div className="p-4 rounded-xl bg-card border border-border/50">
+        <div style={cardStyle} className="p-4">
           <div className="flex h-6 rounded-lg overflow-hidden mb-4">
             {sleepPhases.map((phase) => (
-              <div
-                key={phase.phase}
-                className={cn("h-full", phase.color)}
-                style={{ 
-                  width: `${(phase.duration / totalDuration) * 100}%`,
-                  transition: 'width 0.38s cubic-bezier(.22,1,.36,1)'
-                }}
-              />
+              <div key={phase.phase} className={cn("h-full", phase.color)}
+                style={{ width: `${(phase.duration / totalDuration) * 100}%`, transition: 'width 0.38s cubic-bezier(.22,1,.36,1)' }} />
             ))}
           </div>
           <div className="flex justify-between">
             {sleepPhases.map((phase) => (
-              <div key={phase.phase} className="flex items-center gap-2">
-                <div className={cn("w-3 h-3 rounded-sm", phase.color)} />
-                <span className="text-xs text-muted-foreground">
+              <div key={phase.phase} className="flex items-center gap-1.5">
+                <div className={cn("w-2.5 h-2.5 rounded-sm", phase.color)} />
+                <span className="text-xs" style={{ color: '#9ACBC1' }}>
                   {phase.phase} ({Math.floor(phase.duration / 60)}h {phase.duration % 60}m)
                 </span>
               </div>
@@ -87,99 +87,81 @@ export function SleepPage() {
 
       {/* Weekly Score Chart */}
       <section>
-        <div className="flex items-center gap-2 mb-4">
-          <Zap className="w-4 h-4 text-accent" />
-          <h2 className="text-sm font-semibold text-foreground uppercase tracking-wider">Sleep Score (12 Days)</h2>
+        <div className="flex items-center gap-2 mb-3">
+          <Zap className="w-4 h-4" style={{ color: '#67E8F9' }} />
+          <h2 className="text-xs font-bold uppercase tracking-wider" style={{ color: '#9ACBC1' }}>Sleep Score — 12 Days</h2>
         </div>
-        
-        <div className="p-4 rounded-xl bg-card border border-border/50">
-          <div className="flex items-end justify-between gap-1.5 h-32 mb-3">
+        <div style={cardStyle} className="p-4">
+          <div className="flex items-end justify-between gap-1.5 h-28 mb-3">
             {weeklyScores.map((score, idx) => (
               <div key={idx} className="flex-1 flex flex-col items-center gap-1">
-                <span className="text-[10px] text-muted-foreground tabular-nums">{score}</span>
-                <div 
-                  className={cn(
-                    "w-full rounded-t-sm transition-all duration-300",
-                    score < 65 ? "bg-chart-4" : "bg-primary"
-                  )}
-                  style={{ height: `${score}%` }}
+                <span className="text-[10px] tabular-nums" style={{ color: '#5F8E85' }}>{score}</span>
+                <div
+                  className="w-full rounded-t-sm transition-all duration-500"
+                  style={{
+                    height: `${score}%`,
+                    background: score < 65 ? '#F87171' : '#2DD4BF',
+                    boxShadow: score < 65 ? '0 0 6px rgba(248,113,113,0.4)' : 'none',
+                  }}
                 />
               </div>
             ))}
           </div>
-          <div className="flex justify-between text-[10px] text-muted-foreground">
-            <span>12 days ago</span>
-            <span>Today</span>
+          <div className="flex justify-between text-[10px]" style={{ color: '#5F8E85' }}>
+            <span>12 days ago</span><span>Today</span>
           </div>
-          <div className="flex items-center gap-4 mt-3 pt-3 border-t border-border/50">
+          <div className="flex items-center gap-4 mt-3 pt-3" style={{ borderTop: '1px solid rgba(103,232,249,0.10)' }}>
             <div className="flex items-center gap-2">
-              <div className="w-3 h-3 rounded-sm bg-primary" />
-              <span className="text-xs text-muted-foreground">65+</span>
+              <div className="w-3 h-3 rounded-sm" style={{ background: '#2DD4BF' }} />
+              <span className="text-xs" style={{ color: '#9ACBC1' }}>65+</span>
             </div>
             <div className="flex items-center gap-2">
-              <div className="w-3 h-3 rounded-sm bg-chart-4" />
-              <span className="text-xs text-muted-foreground">Below 65</span>
+              <div className="w-3 h-3 rounded-sm" style={{ background: '#F87171' }} />
+              <span className="text-xs" style={{ color: '#9ACBC1' }}>Below 65</span>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Week vs Weekend Comparison */}
+      {/* Week vs Weekend */}
       <section>
-        <div className="flex items-center gap-2 mb-4">
-          <Brain className="w-4 h-4 text-purple-400" />
-          <h2 className="text-sm font-semibold text-foreground uppercase tracking-wider">Weekday vs Weekend</h2>
+        <div className="flex items-center gap-2 mb-3">
+          <Brain className="w-4 h-4" style={{ color: '#A78BFA' }} />
+          <h2 className="text-xs font-bold uppercase tracking-wider" style={{ color: '#9ACBC1' }}>Weekday vs Weekend</h2>
         </div>
-        
         <div className="grid grid-cols-2 gap-3">
-          <div className="p-4 rounded-xl bg-card border border-border/50">
-            <p className="text-xs text-muted-foreground mb-1">Weekday Avg</p>
-            <span 
-              className="text-xl font-semibold text-foreground tabular-nums"
-              style={{ fontFamily: "'Fraunces', serif" }}
-            >
-              {weekdayAvg}
-            </span>
-            <div className="mt-3 h-2 rounded-full bg-secondary overflow-hidden">
-              <div 
-                className="h-full rounded-full bg-primary"
-                style={{ width: '75%' }}
-              />
+          <div style={cardStyle} className="p-4">
+            <p className="text-xs mb-1" style={{ color: '#9ACBC1' }}>Weekday Avg</p>
+            <span className="text-xl font-semibold tabular-nums" style={{ fontFamily: "'Fraunces', serif", color: '#FCD34D' }}>{weekdayAvg}</span>
+            <div className="mt-3 h-1.5 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.06)' }}>
+              <div className="h-full rounded-full" style={{ width: '75%', background: '#FCD34D' }} />
             </div>
           </div>
-          <div className="p-4 rounded-xl bg-card border border-border/50">
-            <p className="text-xs text-muted-foreground mb-1">Weekend Avg</p>
-            <span 
-              className="text-xl font-semibold text-foreground tabular-nums"
-              style={{ fontFamily: "'Fraunces', serif" }}
-            >
-              {weekendAvg}
-            </span>
-            <div className="mt-3 h-2 rounded-full bg-secondary overflow-hidden">
-              <div 
-                className="h-full rounded-full bg-accent"
-                style={{ width: '88%' }}
-              />
+          <div style={cardStyle} className="p-4">
+            <p className="text-xs mb-1" style={{ color: '#9ACBC1' }}>Weekend Avg</p>
+            <span className="text-xl font-semibold tabular-nums" style={{ fontFamily: "'Fraunces', serif", color: '#4ADE80' }}>{weekendAvg}</span>
+            <div className="mt-3 h-1.5 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.06)' }}>
+              <div className="h-full rounded-full" style={{ width: '88%', background: '#4ADE80' }} />
             </div>
           </div>
         </div>
-        <p className="text-xs text-muted-foreground mt-3 text-center">
+        <p className="text-xs text-center mt-3" style={{ color: '#5F8E85' }}>
           You sleep 53 minutes more on weekends
         </p>
       </section>
 
       {/* Meridian Insight */}
-      <section className="p-4 rounded-xl bg-gradient-to-br from-primary/10 to-accent/10 border border-primary/20">
+      <section style={insightStyle}>
         <div className="flex items-start gap-3">
-          <div className="flex-shrink-0 w-10 h-10 rounded-xl bg-primary/20 flex items-center justify-center">
-            <Moon className="w-5 h-5 text-primary" />
+          <div className="flex-shrink-0 w-9 h-9 rounded-xl flex items-center justify-center" style={{ background: 'rgba(45,212,191,0.12)' }}>
+            <Moon className="w-4 h-4" style={{ color: '#2DD4BF' }} />
           </div>
           <div>
-            <h3 className="text-sm font-semibold text-foreground mb-1">Meridian Insight</h3>
-            <p className="text-xs text-muted-foreground leading-relaxed">
-              Your HRV of 19ms is low, and REM was cut short at 1h 51m — likely due to elevated TSH impacting sleep architecture. 
-              Deep sleep hit target at 1h 31m, but overall recovery is compromised. Prioritize your PM stack tonight 
-              (magnesium, glycine) and aim for lights out by 10pm to support thyroid and nervous system recovery.
+            <div style={{ fontSize: '10px', fontWeight: 800, color: '#2DD4BF', textTransform: 'uppercase', letterSpacing: '0.09em', marginBottom: '6px' }}>Meridian Insight</div>
+            <p className="text-xs leading-relaxed" style={{ color: '#EAFBF7' }}>
+              Your HRV of 19ms is low, and REM was cut short at 1h 51m — likely due to elevated TSH impacting sleep architecture.
+              Deep sleep hit target at 1h 31m, but overall recovery is compromised. Prioritize your PM stack tonight
+              (magnesium, L-Theanine) and aim for lights out by 10pm to support thyroid and nervous system recovery.
             </p>
           </div>
         </div>

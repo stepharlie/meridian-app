@@ -78,11 +78,19 @@ export function MeridianScore({
   const strokeDashoffset = circumference - (animatedScore / 100) * circumference
 
   return (
-    <section className="px-4 py-6 lg:px-6">
-      <div 
-        className="p-6 rounded-2xl bg-card border border-border/50 cursor-pointer select-none"
+    <section className="px-4 py-4 lg:px-6">
+      <div
+        className="p-6 rounded-2xl cursor-pointer select-none"
         onClick={() => setIsExpanded(!isExpanded)}
-        style={{ transition: 'all 0.38s cubic-bezier(.22,1,.36,1)' }}
+        style={{
+          background: 'rgba(232,248,245,0.055)',
+          border: '1px solid rgba(103,232,249,0.13)',
+          backdropFilter: 'blur(24px)',
+          WebkitBackdropFilter: 'blur(24px)',
+          boxShadow: '0 8px 40px rgba(0,0,0,0.25)',
+          transition: 'all 0.38s cubic-bezier(.22,1,.36,1)',
+          borderRadius: '24px',
+        }}
       >
         <div className="flex flex-col lg:flex-row lg:items-center gap-6">
           {/* Score Circle */}
@@ -94,38 +102,34 @@ export function MeridianScore({
               <svg className="w-full h-full -rotate-90" viewBox="0 0 100 100">
                 {/* Background circle */}
                 <circle
-                  cx="50"
-                  cy="50"
-                  r="45"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="6"
-                  className="text-secondary"
+                  cx="50" cy="50" r="45" fill="none"
+                  stroke="rgba(232,248,245,0.07)" strokeWidth="6"
                 />
-                {/* Progress circle */}
+                {/* Progress circle — always teal gradient */}
+                <defs>
+                  <linearGradient id="scoreGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" stopColor="#2DD4BF" />
+                    <stop offset="100%" stopColor="#67E8F9" />
+                  </linearGradient>
+                </defs>
                 <circle
-                  cx="50"
-                  cy="50"
-                  r="45"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="6"
+                  cx="50" cy="50" r="45" fill="none"
+                  stroke="url(#scoreGrad)" strokeWidth="6"
                   strokeLinecap="round"
-                  className={cn("transition-all duration-1000", getScoreColor(animatedScore))}
                   style={{
                     strokeDasharray: circumference,
                     strokeDashoffset: strokeDashoffset,
+                    transition: 'stroke-dashoffset 1.6s cubic-bezier(.22,1,.36,1)',
                   }}
                 />
               </svg>
               <div className="absolute inset-0 flex flex-col items-center justify-center">
-                <span 
-                  className={cn("tabular-nums", getScoreColor(animatedScore))}
-                  style={{ fontFamily: "'Fraunces', serif", fontSize: '54px', fontWeight: 700, lineHeight: 0.9 }}
+                <span
+                  style={{ fontFamily: "'Fraunces', serif", fontSize: '54px', fontWeight: 700, lineHeight: 0.9, color: '#67E8F9' }}
                 >
                   {animatedScore}
                 </span>
-                <span className="text-xs text-muted-foreground">{getStatusLabel(animatedScore)}</span>
+                <span className="text-xs mt-1" style={{ color: '#9ACBC1' }}>{getStatusLabel(animatedScore)}</span>
               </div>
             </div>
             <p className="text-xs text-center text-muted-foreground mt-4 max-w-[180px] leading-relaxed">
@@ -192,15 +196,21 @@ export function MeridianScore({
         </div>
 
         {/* Insight */}
-        <div className="mt-6 p-4 rounded-xl bg-primary/5 border border-primary/10">
+        <div className="mt-6" style={{
+          background: 'rgba(45,212,191,0.07)',
+          border: '1px solid rgba(45,212,191,0.22)',
+          borderLeft: '4px solid #2DD4BF',
+          borderRadius: '16px',
+          padding: '16px 20px',
+        }}>
           <div className="flex items-start gap-3">
-            <div className="flex-shrink-0 w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
-              <span className="text-primary text-lg">✦</span>
+            <div className="flex-shrink-0 w-7 h-7 rounded-lg flex items-center justify-center" style={{ background: 'rgba(45,212,191,0.12)' }}>
+              <span style={{ color: '#2DD4BF', fontSize: '14px' }}>✦</span>
             </div>
             <div>
-              <span className="text-xs font-semibold text-primary uppercase tracking-wider">Meridian Insight</span>
-              <p className="text-sm text-foreground mt-1 leading-relaxed text-pretty">
-                Your recovery is moderate. Today your body seems to need light movement, enough protein, and a consistent night more than high intensity.
+              <span style={{ fontSize: '10px', fontWeight: 800, color: '#2DD4BF', textTransform: 'uppercase', letterSpacing: '0.09em' }}>Meridian Insight</span>
+              <p className="text-sm mt-1 leading-relaxed" style={{ color: '#EAFBF7' }}>
+                Your recovery is moderate. Today your body needs light movement, enough protein, and a consistent night more than high intensity.
               </p>
             </div>
           </div>

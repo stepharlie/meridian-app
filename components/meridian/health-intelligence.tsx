@@ -349,12 +349,18 @@ export function HealthIntelligence() {
         </p>
       )}
 
-      {/* Next Step - More prominent */}
+      {/* Next Step */}
       {nextBestStep && (
-        <div className="mb-6 p-4 rounded-xl bg-primary/5 border border-primary/10">
-          <p className="text-sm sm:text-base text-foreground leading-relaxed">
-            <span className="font-semibold text-primary">Next step:</span>{" "}
-            <span className="text-foreground">{nextBestStep}</span>
+        <div className="mb-5" style={{
+          background: 'rgba(45,212,191,0.07)',
+          border: '1px solid rgba(45,212,191,0.22)',
+          borderLeft: '4px solid #2DD4BF',
+          borderRadius: '16px',
+          padding: '16px 20px',
+        }}>
+          <p className="text-sm leading-relaxed" style={{ color: '#EAFBF7' }}>
+            <span style={{ fontWeight: 800, color: '#2DD4BF' }}>Next step: </span>
+            {nextBestStep}
           </p>
         </div>
       )}
