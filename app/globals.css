@@ -108,7 +108,7 @@ body {
 }
 
 /* Ensure content is above orbs */
-#__next, main, header, nav, section, div[class*="px-"] {
+#__next, main, header, section, div[class*="px-"] {
   position: relative;
   z-index: 1;
 }
