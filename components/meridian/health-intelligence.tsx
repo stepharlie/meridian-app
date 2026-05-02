@@ -1,9 +1,15 @@
 "use client"
 
 import { useState, useEffect, useMemo } from "react"
-import { ArrowRight, FlaskConical, Upload, Plus } from "lucide-react"
+import { 
+  ArrowRight, 
+  FlaskConical, 
+  Upload,
+  Plus,
+} from "lucide-react"
 import { useNav } from "./nav-context"
 
+// Types matching labs-page
 type BiomarkerStatus = "optimal" | "watch" | "attention" | "out-of-range"
 
 interface LabEntry {
@@ -14,7 +20,8 @@ interface LabEntry {
   source: "demo" | "user" | "ai"
 }
 
-const biomarkerDefinitions: Record<string, {
+// Biomarker definitions (subset for intelligence generation)
+const biomarkerDefinitions: Record<string, { 
   name: string
   unit: string
   clinicalRange: { min: number; max: number }
@@ -86,6 +93,7 @@ const biomarkerDefinitions: Record<string, {
   },
 }
 
+// Demo biomarker data (matching labs-page)
 const demoBiomarkers: LabEntry[] = [
   { biomarkerId: "glucose", value: 92, date: "2026-03-15", source: "demo" },
   { biomarkerId: "a1c", value: 5.4, date: "2026-03-15", source: "demo" },
@@ -100,21 +108,25 @@ const demoBiomarkers: LabEntry[] = [
 
 const LABS_STORAGE_KEY = "meridian-labs-data"
 
-function getBiomarkerStatus(
-  value: number,
-  clinicalRange: { min: number; max: number },
-  optimalRange: { min: number; max: number }
-): BiomarkerStatus {
-  if (value < clinicalRange.min || value > clinicalRange.max) return "out-of-range"
-  if (value >= optimalRange.min && value <= optimalRange.max) return "optimal"
+// Helper functions
+function getBiomarkerStatus(value: number, clinicalRange: { min: number; max: number }, optimalRange: { min: number; max: number }): BiomarkerStatus {
+  if (value < clinicalRange.min || value > clinicalRange.max) {
+    return "out-of-range"
+  }
+  if (value >= optimalRange.min && value <= optimalRange.max) {
+    return "optimal"
+  }
   const optimalMid = (optimalRange.min + optimalRange.max) / 2
   const optimalSpan = optimalRange.max - optimalRange.min
   const distance = Math.abs(value - optimalMid)
   const normalizedDistance = distance / (optimalSpan / 2)
-  if (normalizedDistance <= 1.5) return "watch"
+  if (normalizedDistance <= 1.5) {
+    return "watch"
+  }
   return "attention"
 }
 
+// Sorting priority
 const statusPriority: Record<BiomarkerStatus, number> = {
   "out-of-range": 1,
   attention: 2,
@@ -136,6 +148,7 @@ export function HealthIntelligence() {
   const [mounted, setMounted] = useState(false)
   const [userEntries, setUserEntries] = useState<LabEntry[]>([])
 
+  // Load user data from localStorage
   useEffect(() => {
     setMounted(true)
     if (typeof window !== "undefined") {
@@ -150,40 +163,120 @@ export function HealthIntelligence() {
     }
   }, [])
 
+  // Combine demo and user entries
   const allEntries = useMemo(() => {
     return [...demoBiomarkers, ...userEntries]
   }, [userEntries])
 
+  // Build biomarkers with status
   const biomarkersWithStatus: BiomarkerWithStatus[] = useMemo(() => {
     const biomarkerMap = new Map<string, LabEntry>()
+    
+    // Process entries (newer entries overwrite older ones for same biomarker)
     allEntries
       .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
-      .forEach(entry => { biomarkerMap.set(entry.biomarkerId, entry) })
+      .forEach(entry => {
+        biomarkerMap.set(entry.biomarkerId, entry)
+      })
+    
     const results: BiomarkerWithStatus[] = []
     biomarkerMap.forEach((entry, biomarkerId) => {
       const def = biomarkerDefinitions[biomarkerId]
       if (!def) return
+      
+      const status = getBiomarkerStatus(entry.value, def.clinicalRange, def.optimalRange)
       results.push({
         id: biomarkerId,
         name: def.name,
         value: entry.value,
         unit: def.unit,
-        status: getBiomarkerStatus(entry.value, def.clinicalRange, def.optimalRange),
+        status,
         nextBestStep: def.nextBestStep,
       })
     })
+    
+    // Sort by priority
     return results.sort((a, b) => statusPriority[a.status] - statusPriority[b.status])
   }, [allEntries])
 
+  // Check if we have any lab data
   const hasLabData = biomarkersWithStatus.length > 0
+
+  // Get priority biomarkers (non-optimal ones)
   const priorityBiomarkers = biomarkersWithStatus.filter(b => b.status !== "optimal")
   const optimalBiomarkers = biomarkersWithStatus.filter(b => b.status === "optimal")
-  const nextBestStep = priorityBiomarkers.length > 0
-    ? priorityBiomarkers[0].nextBestStep
-    : optimalBiomarkers.length > 0
+
+  // Generate primary insight sentence with bold biomarker names
+  const primaryInsightParts = useMemo(() => {
+    if (!hasLabData) return null
+    
+    if (priorityBiomarkers.length === 0) {
+      return {
+        before: "Your biological markers are well-balanced — a strong foundation for sustained energy and recovery.",
+        biomarkers: [] as { name: string; id: string }[],
+        after: ""
+      }
+    }
+    
+    if (priorityBiomarkers.length === 1) {
+      const b = priorityBiomarkers[0]
+      if (b.status === "out-of-range") {
+        return {
+          before: "Your ",
+          biomarkers: [{ name: b.name, id: b.id }],
+          after: " is out of range and is likely limiting your recovery and energy."
+        }
+      }
+      if (b.status === "attention") {
+        return {
+          before: "Your ",
+          biomarkers: [{ name: b.name, id: b.id }],
+          after: " is worth prioritizing — it is likely limiting your energy and recovery capacity."
+        }
+      }
+      return {
+        before: "Your ",
+        biomarkers: [{ name: b.name, id: b.id }],
+        after: " is worth watching — it may be influencing your energy levels."
+      }
+    }
+    
+    // Multiple priority markers
+    const topTwo = priorityBiomarkers.slice(0, 2)
+    const hasOutOfRange = topTwo.some(b => b.status === "out-of-range")
+    const hasAttention = topTwo.some(b => b.status === "attention")
+    
+    if (hasOutOfRange) {
+      return {
+        before: "Your recovery is likely limited right now, primarily influenced by ",
+        biomarkers: topTwo.map(b => ({ name: b.name, id: b.id })),
+        after: " levels."
+      }
+    }
+    
+    if (hasAttention) {
+      return {
+        before: "",
+        biomarkers: topTwo.map(b => ({ name: b.name, id: b.id })),
+        after: " are worth prioritizing — they are likely limiting your energy and cardiometabolic resilience."
+      }
+    }
+    
+    return {
+      before: "",
+      biomarkers: topTwo.map(b => ({ name: b.name, id: b.id })),
+      after: " are worth watching — they may be influencing your energy levels."
+    }
+  }, [hasLabData, priorityBiomarkers])
+
+  // Get next best step from top priority biomarker
+  const nextBestStep = priorityBiomarkers.length > 0 
+    ? priorityBiomarkers[0].nextBestStep 
+    : optimalBiomarkers.length > 0 
       ? "Continue your current health practices to maintain this excellent balance."
       : null
 
+  // SSR-safe: show loading state until mounted
   if (!mounted) {
     return (
       <section className="px-4 py-4 lg:px-6">
@@ -196,6 +289,7 @@ export function HealthIntelligence() {
     )
   }
 
+  // Empty state - no lab data
   if (!hasLabData) {
     return (
       <section className="px-4 py-4 lg:px-6">
@@ -203,6 +297,7 @@ export function HealthIntelligence() {
           <p className="text-base text-foreground leading-relaxed mb-4">
             Upload your latest bloodwork to unlock personalized insights about your health.
           </p>
+
           <div className="flex flex-col sm:flex-row gap-3 mb-4">
             <button
               onClick={() => navigateToLabs()}
@@ -219,6 +314,7 @@ export function HealthIntelligence() {
               Upload PDF
             </button>
           </div>
+
           <button
             onClick={() => navigateToLabs()}
             className="flex items-center gap-2 text-sm text-primary hover:underline font-medium"
@@ -234,96 +330,95 @@ export function HealthIntelligence() {
 
   return (
     <section className="px-4 py-4 lg:px-6">
-      <div
-        className="mb-5"
-        style={{
-          background: "rgba(45,212,191,0.07)",
-          border: "1px solid rgba(45,212,191,0.22)",
-          borderLeft: "4px solid #2DD4BF",
-          borderRadius: "16px",
-          padding: "22px 24px",
-        }}
-      >
-        <p style={{ fontSize: "16px", lineHeight: 1.65, marginBottom: "14px", color: "#EAFBF7", fontWeight: 600 }}>
+
+      {/* Primary Insight — decision-level intelligence */}
+      <div className="mb-5" style={{
+        background: 'rgba(45,212,191,0.07)',
+        border: '1px solid rgba(45,212,191,0.22)',
+        borderLeft: '4px solid #2DD4BF',
+        borderRadius: '16px',
+        padding: '22px 24px',
+      }}>
+        {/* Line 1 — What is happening */}
+        <p style={{ fontSize: '16px', lineHeight: 1.65, marginBottom: '14px', color: '#EAFBF7', fontWeight: 600 }}>
           Your TSH is elevated and your HRV is suppressed this week — your nervous system is under load.
         </p>
-        <p style={{ fontSize: "16px", lineHeight: 1.65, marginBottom: "14px", color: "#EAFBF7", fontWeight: 600 }}>
-          <span style={{ fontWeight: 800, color: "#2DD4BF" }}>Today: </span>
+        {/* Line 2 — What to do */}
+        <p style={{ fontSize: '16px', lineHeight: 1.65, marginBottom: '14px', color: '#EAFBF7', fontWeight: 600 }}>
+          <span style={{ fontWeight: 800, color: '#2DD4BF' }}>Today: </span>
           Walk 20 minutes and prioritize protein at breakfast.
         </p>
-        <p style={{ fontSize: "15px", lineHeight: 1.65, marginBottom: "16px", color: "#9ACBC1", fontWeight: 500 }}>
+        {/* Line 3 — What to avoid */}
+        <p style={{ fontSize: '15px', lineHeight: 1.65, marginBottom: '16px', color: '#9ACBC1', fontWeight: 500 }}>
           Avoid high intensity — your current state will likely extend recovery into the next 48 hours.
         </p>
-        <p style={{ fontSize: "12px", fontWeight: 600, color: "#9ACBC1", borderTop: "1px solid rgba(103,232,249,0.10)", paddingTop: "12px" }}>
+        {/* Trust line */}
+        <p style={{ fontSize: '12px', fontWeight: 600, color: '#9ACBC1', borderTop: '1px solid rgba(103,232,249,0.10)', paddingTop: '12px' }}>
           Derived from your thyroid labs + Oura wearable data · Meridian interprets, you decide.
         </p>
       </div>
 
+      {/* ONE BIG BUTTON — The primary action */}
       <button
         onClick={() => {}}
         style={{
-          width: "100%",
-          padding: "18px 24px",
-          borderRadius: "18px",
-          border: "none",
-          background: "linear-gradient(135deg, #2DD4BF, #67E8F9)",
-          color: "#061316",
-          fontSize: "16px",
+          width: '100%',
+          padding: '18px 24px',
+          borderRadius: '18px',
+          border: 'none',
+          background: 'linear-gradient(135deg, #2DD4BF, #67E8F9)',
+          color: '#061316',
+          fontSize: '16px',
           fontWeight: 800,
-          cursor: "pointer",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          gap: "10px",
-          marginBottom: "16px",
-          boxShadow: "0 0 32px rgba(45,212,191,0.25)",
-          transition: "all 0.22s cubic-bezier(.22,1,.36,1)",
-          letterSpacing: "-0.01em",
+          cursor: 'pointer',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          gap: '10px',
+          marginBottom: '16px',
+          boxShadow: '0 0 32px rgba(45,212,191,0.25)',
+          transition: 'all 0.22s cubic-bezier(.22,1,.36,1)',
+          letterSpacing: '-0.01em',
         }}
         onMouseOver={e => {
-          const btn = e.currentTarget as HTMLButtonElement
-          btn.style.boxShadow = "0 0 48px rgba(45,212,191,0.4)"
-          btn.style.transform = "translateY(-2px)"
+          (e.currentTarget as HTMLButtonElement).style.boxShadow = '0 0 48px rgba(45,212,191,0.4)'
+          ;(e.currentTarget as HTMLButtonElement).style.transform = 'translateY(-2px)'
         }}
         onMouseOut={e => {
-          const btn = e.currentTarget as HTMLButtonElement
-          btn.style.boxShadow = "0 0 32px rgba(45,212,191,0.25)"
-          btn.style.transform = "translateY(0)"
+          (e.currentTarget as HTMLButtonElement).style.boxShadow = '0 0 32px rgba(45,212,191,0.25)'
+          ;(e.currentTarget as HTMLButtonElement).style.transform = 'translateY(0)'
         }}
       >
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-          <circle cx="12" cy="12" r="10" />
-          <polyline points="12 6 12 12 16 14" />
+          <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
         </svg>
         Start your 20-min walk now
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-          <line x1="5" y1="12" x2="19" y2="12" />
-          <polyline points="12 5 19 12 12 19" />
+          <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
         </svg>
       </button>
 
+      {/* Next Step */}
       {nextBestStep && (
-        <div
-          className="mb-5"
-          style={{
-            background: "rgba(45,212,191,0.07)",
-            border: "1px solid rgba(45,212,191,0.22)",
-            borderLeft: "4px solid #2DD4BF",
-            borderRadius: "16px",
-            padding: "16px 20px",
-          }}
-        >
-          <p style={{ fontSize: "15px", lineHeight: 1.6, color: "#EAFBF7", fontWeight: 500 }}>
-            <span style={{ fontWeight: 800, color: "#2DD4BF" }}>Next step: </span>
+        <div className="mb-5" style={{
+          background: 'rgba(45,212,191,0.07)',
+          border: '1px solid rgba(45,212,191,0.22)',
+          borderLeft: '4px solid #2DD4BF',
+          borderRadius: '16px',
+          padding: '16px 20px',
+        }}>
+          <p style={{ fontSize: '15px', lineHeight: 1.6, color: '#EAFBF7', fontWeight: 500 }}>
+            <span style={{ fontWeight: 800, color: '#2DD4BF' }}>Next step: </span>
             {nextBestStep}
           </p>
         </div>
       )}
 
+      {/* Labs CTA - secondary, smaller */}
       <button
         onClick={() => navigateToLabs()}
         className="w-full sm:w-auto flex items-center justify-center sm:justify-start gap-2 px-4 py-3 sm:px-0 sm:py-0 rounded-xl sm:rounded-none bg-primary/5 sm:bg-transparent border border-primary/10 sm:border-0 text-sm text-primary hover:bg-primary/10 sm:hover:bg-transparent sm:hover:underline font-medium transition-colors"
-        style={{ fontSize: "14px" }}
+        style={{ fontSize: '14px' }}
       >
         <FlaskConical className="w-4 h-4" />
         View full lab analysis
