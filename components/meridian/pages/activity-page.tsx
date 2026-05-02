@@ -141,9 +141,9 @@ export function ActivityPage() {
             </span>
             <div className="flex items-center gap-1 mt-1">
               <span className={cn("text-xs font-bold", m.trendColor)}>{m.trend}</span>
-              <span className="text-[11px]" style={{ color: '#5F8E85' }}>{m.trendLabel}</span>
+              <span className="text-[11px]" style={{ color: '#9ACBC1' }}>{m.trendLabel}</span>
             </div>
-            <p className="text-[11px] mt-1" style={{ color: '#5F8E85' }}>{m.sub}</p>
+            <p className="text-[11px] mt-1" style={{ color: '#9ACBC1' }}>{m.sub}</p>
             <div className="mt-2 h-1 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.06)' }}>
               <div
                 className={cn("h-full rounded-full transition-all duration-700", m.color.replace("text-", "bg-"))}
@@ -172,7 +172,7 @@ export function ActivityPage() {
                     boxShadow: w.steps < 25000 ? '0 0 5px rgba(248,113,113,0.4)' : 'none',
                   }}
                 />
-                <span className="text-[9px]" style={{ color: '#5F8E85' }}>{w.week}</span>
+                <span className="text-[9px]" style={{ color: '#9ACBC1' }}>{w.week}</span>
               </div>
             ))}
           </div>
@@ -185,7 +185,7 @@ export function ActivityPage() {
               <div className="w-2.5 h-2.5 rounded-sm" style={{ background: '#F87171' }} />
               <span className="text-xs" style={{ color: '#9ACBC1' }}>Below 25k</span>
             </div>
-            <span className="text-xs ml-auto" style={{ color: '#5F8E85' }}>Goal: 49k / week</span>
+            <span className="text-xs ml-auto" style={{ color: '#9ACBC1' }}>Goal: 49k / week</span>
           </div>
         </div>
       </section>
@@ -197,7 +197,7 @@ export function ActivityPage() {
             <Zap className="w-4 h-4" style={{ color: '#FCD34D' }} />
             <h2 className="text-xs font-bold uppercase tracking-wider" style={{ color: '#9ACBC1' }}>Muscle Load — 4 Weeks</h2>
           </div>
-          <span className="text-[11px]" style={{ color: '#5F8E85' }}>16 sessions</span>
+          <span className="text-[11px]" style={{ color: '#9ACBC1' }}>16 sessions</span>
         </div>
         <div style={cardStyle} className="p-4 space-y-4">
           {muscleGroups.map((mg) => (
@@ -217,7 +217,7 @@ export function ActivityPage() {
               </div>
             </div>
           ))}
-          <p className="text-[11px] pt-2" style={{ color: '#5F8E85', borderTop: '1px solid rgba(103,232,249,0.10)' }}>
+          <p className="text-[11px] pt-2" style={{ color: '#9ACBC1', borderTop: '1px solid rgba(103,232,249,0.10)' }}>
             Based on exercise type, duration, and HR from Garmin sessions
           </p>
         </div>
@@ -243,7 +243,7 @@ export function ActivityPage() {
             }}>
               <p className="text-xs mb-1" style={{ color: '#9ACBC1' }}>{label}</p>
               <span className="text-2xl font-bold" style={{ fontFamily: "'Fraunces', serif", color }}>{val}</span>
-              <p className="text-[11px] mt-1" style={{ color: '#5F8E85' }}>{sub}</p>
+              <p className="text-[11px] mt-1" style={{ color: '#9ACBC1' }}>{sub}</p>
             </div>
           ))}
         </div>

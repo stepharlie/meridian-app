@@ -182,7 +182,7 @@ export function InsightsPage() {
                   <h3 className="text-sm font-semibold text-foreground">{insight.title}</h3>
                   <TrendIcon trend={insight.trend} />
                 </div>
-                <p className="text-xs text-muted-foreground leading-relaxed">{insight.description}</p>
+                <p className="text-[13px] text-muted-foreground leading-relaxed">{insight.description}</p>
               </div>
               <ChevronRight className="w-4 h-4 text-muted-foreground group-hover:text-foreground group-hover:translate-x-1 transition-all flex-shrink-0 mt-1" />
             </button>
@@ -227,7 +227,7 @@ export function InsightsPage() {
           </div>
           <div>
             <h3 className="text-sm font-semibold text-foreground mb-1">Weekly Summary</h3>
-            <p className="text-xs text-muted-foreground leading-relaxed">
+            <p className="text-[13px] text-muted-foreground leading-relaxed">
               Your recovery metrics are trending positively. Focus on maintaining your improved sleep consistency 
               and consider adding one more active recovery day to optimize your HRV further.
             </p>

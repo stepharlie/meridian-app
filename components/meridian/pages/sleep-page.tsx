@@ -95,7 +95,7 @@ export function SleepPage() {
           <div className="flex items-end justify-between gap-1.5 h-28 mb-3">
             {weeklyScores.map((score, idx) => (
               <div key={idx} className="flex-1 flex flex-col items-center gap-1">
-                <span className="text-[11px] tabular-nums" style={{ color: '#5F8E85' }}>{score}</span>
+                <span className="text-[11px] tabular-nums" style={{ color: '#9ACBC1' }}>{score}</span>
                 <div
                   className="w-full rounded-t-sm transition-all duration-500"
                   style={{
@@ -107,7 +107,7 @@ export function SleepPage() {
               </div>
             ))}
           </div>
-          <div className="flex justify-between text-[11px]" style={{ color: '#5F8E85' }}>
+          <div className="flex justify-between text-[11px]" style={{ color: '#9ACBC1' }}>
             <span>12 days ago</span><span>Today</span>
           </div>
           <div className="flex items-center gap-4 mt-3 pt-3" style={{ borderTop: '1px solid rgba(103,232,249,0.10)' }}>
@@ -145,7 +145,7 @@ export function SleepPage() {
             </div>
           </div>
         </div>
-        <p className="text-xs text-center mt-3" style={{ color: '#5F8E85' }}>
+        <p className="text-xs text-center mt-3" style={{ color: '#9ACBC1' }}>
           You sleep 53 minutes more on weekends
         </p>
       </section>

@@ -108,7 +108,7 @@ export function MorningSignal({ userName = "Stephanie" }: { userName?: string })
         <GreetingIcon className="w-7 h-7 sm:w-8 sm:h-8 text-primary" />
         {mounted ? timeGreeting.greeting : defaultGreeting.greeting}, {userName}
       </h1>
-      <p className="text-sm sm:text-base text-muted-foreground leading-relaxed mb-6 max-w-2xl text-pretty">
+      <p className="text-base text-muted-foreground leading-relaxed mb-6 max-w-2xl text-pretty">
         Meridian reads your recovery, labs, activity, cycle, body composition, and method adherence as one connected system — so today&apos;s next step is clear.
       </p>
 

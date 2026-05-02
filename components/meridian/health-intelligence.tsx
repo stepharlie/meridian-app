@@ -355,26 +355,66 @@ export function HealthIntelligence() {
         border: '1px solid rgba(45,212,191,0.22)',
         borderLeft: '4px solid #2DD4BF',
         borderRadius: '16px',
-        padding: '20px 22px',
+        padding: '22px 24px',
       }}>
         {/* Line 1 — What is happening */}
-        <p className="text-sm leading-relaxed mb-3" style={{ color: '#EAFBF7', fontWeight: 600 }}>
+        <p style={{ fontSize: '16px', lineHeight: 1.65, marginBottom: '14px', color: '#EAFBF7', fontWeight: 600 }}>
           Your TSH is elevated and your HRV is suppressed this week — your nervous system is under load.
         </p>
         {/* Line 2 — What to do */}
-        <p className="text-sm leading-relaxed mb-3" style={{ color: '#EAFBF7', fontWeight: 600 }}>
+        <p style={{ fontSize: '16px', lineHeight: 1.65, marginBottom: '14px', color: '#EAFBF7', fontWeight: 600 }}>
           <span style={{ fontWeight: 800, color: '#2DD4BF' }}>Today: </span>
           Walk 20 minutes and prioritize protein at breakfast.
         </p>
         {/* Line 3 — What to avoid */}
-        <p className="text-sm leading-relaxed mb-4" style={{ color: '#9ACBC1', fontWeight: 600 }}>
+        <p style={{ fontSize: '15px', lineHeight: 1.65, marginBottom: '16px', color: '#9ACBC1', fontWeight: 500 }}>
           Avoid high intensity — your current state will likely extend recovery into the next 48 hours.
         </p>
         {/* Trust line */}
-        <p style={{ fontSize: '11px', fontWeight: 600, color: '#5F8E85', borderTop: '1px solid rgba(103,232,249,0.10)', paddingTop: '12px' }}>
+        <p style={{ fontSize: '12px', fontWeight: 600, color: '#9ACBC1', borderTop: '1px solid rgba(103,232,249,0.10)', paddingTop: '12px' }}>
           Derived from your thyroid labs + Oura wearable data · Meridian interprets, you decide.
         </p>
       </div>
+
+      {/* ONE BIG BUTTON — The primary action */}
+      <button
+        onClick={() => {}}
+        style={{
+          width: '100%',
+          padding: '18px 24px',
+          borderRadius: '18px',
+          border: 'none',
+          background: 'linear-gradient(135deg, #2DD4BF, #67E8F9)',
+          color: '#061316',
+          fontSize: '16px',
+          fontWeight: 800,
+          cursor: 'pointer',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          gap: '10px',
+          marginBottom: '16px',
+          boxShadow: '0 0 32px rgba(45,212,191,0.25)',
+          transition: 'all 0.22s cubic-bezier(.22,1,.36,1)',
+          letterSpacing: '-0.01em',
+        }}
+        onMouseOver={e => {
+          (e.currentTarget as HTMLButtonElement).style.boxShadow = '0 0 48px rgba(45,212,191,0.4)'
+          ;(e.currentTarget as HTMLButtonElement).style.transform = 'translateY(-2px)'
+        }}
+        onMouseOut={e => {
+          (e.currentTarget as HTMLButtonElement).style.boxShadow = '0 0 32px rgba(45,212,191,0.25)'
+          ;(e.currentTarget as HTMLButtonElement).style.transform = 'translateY(0)'
+        }}
+      >
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+          <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+        </svg>
+        Start your 20-min walk now
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+          <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
+        </svg>
+      </button>
 
       {/* Next Step */}
       {nextBestStep && (
@@ -385,17 +425,18 @@ export function HealthIntelligence() {
           borderRadius: '16px',
           padding: '16px 20px',
         }}>
-          <p className="text-sm leading-relaxed" style={{ color: '#EAFBF7' }}>
+          <p style={{ fontSize: '15px', lineHeight: 1.6, color: '#EAFBF7', fontWeight: 500 }}>
             <span style={{ fontWeight: 800, color: '#2DD4BF' }}>Next step: </span>
             {nextBestStep}
           </p>
         </div>
       )}
 
-      {/* Labs CTA - Full width on mobile */}
+      {/* Labs CTA - secondary, smaller */}
       <button
         onClick={() => navigateToLabs()}
         className="w-full sm:w-auto flex items-center justify-center sm:justify-start gap-2 px-4 py-3 sm:px-0 sm:py-0 rounded-xl sm:rounded-none bg-primary/5 sm:bg-transparent border border-primary/10 sm:border-0 text-sm text-primary hover:bg-primary/10 sm:hover:bg-transparent sm:hover:underline font-medium transition-colors"
+        style={{ fontSize: '14px' }}
       >
         <FlaskConical className="w-4 h-4" />
         View full lab analysis

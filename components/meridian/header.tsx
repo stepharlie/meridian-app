@@ -156,7 +156,7 @@ export function MeridianHeader() {
                   fontWeight: 700, 
                   letterSpacing: '0.12em', 
                   textTransform: 'uppercase', 
-                  color: '#5F8E85', 
+                  color: '#9ACBC1', 
                   marginTop: '1px',
                   transition: 'opacity 0.38s cubic-bezier(.22,1,.36,1), max-height 0.38s cubic-bezier(.22,1,.36,1)',
                   opacity: isCompact ? 0 : 1,

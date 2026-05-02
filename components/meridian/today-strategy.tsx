@@ -64,7 +64,7 @@ export function TodayStrategy() {
       {/* Strategy Header */}
       <div className="mb-6">
         <h2 className="text-lg font-semibold text-foreground mb-1">Today&apos;s Strategy</h2>
-        <p className="text-sm text-muted-foreground text-pretty">
+        <p className="text-[15px] text-muted-foreground text-pretty leading-relaxed">
           Protect recovery, preserve muscle. Keep the day simple: walk, hit protein, complete the PM stack, and avoid turning a medium-readiness day into unnecessary stress.
         </p>
       </div>

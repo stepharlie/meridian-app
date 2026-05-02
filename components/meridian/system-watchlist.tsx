@@ -160,7 +160,7 @@ export function SystemWatchlist() {
                 </div>
 
                 {/* Description - Mobile */}
-                <div className="text-xs font-medium text-foreground whitespace-nowrap">{connection.description}</div>
+                <div className="text-[13px] font-medium text-foreground whitespace-nowrap">{connection.description}</div>
               </button>
             ))}
           </div>
