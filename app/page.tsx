@@ -64,8 +64,20 @@ function HomePage() {
       transform: ready ? "translateY(0)" : "translateY(8px)",
       transition: "opacity 0.35s cubic-bezier(.22,1,.36,1), transform 0.35s cubic-bezier(.22,1,.36,1)"
     }}>
+      {/* PRIMARY — What to do today */}
       <HomeGreeting />
       <HealthIntelligence />
+
+      {/* SEPARATOR — Visual break between directive and context */}
+      <div style={{ margin: "8px 16px 0", display: "flex", alignItems: "center", gap: "12px" }}>
+        <div style={{ flex: 1, height: "1px", background: "rgba(103,232,249,0.10)" }} />
+        <span style={{ fontSize: "10px", fontWeight: 700, color: "#5F8E85", textTransform: "uppercase", letterSpacing: "0.10em", whiteSpace: "nowrap" }}>
+          Supporting context
+        </span>
+        <div style={{ flex: 1, height: "1px", background: "rgba(103,232,249,0.10)" }} />
+      </div>
+
+      {/* SECONDARY — Context and detail */}
       <MeridianScore
         score={62}
         recovery="Moderate"
