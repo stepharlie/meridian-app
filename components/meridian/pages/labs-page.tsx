@@ -589,13 +589,12 @@ function getNextTestInfo(status: BiomarkerStatus, lastDate: string): {
   next.setMonth(next.getMonth() + months)
   const now = new Date()
   const daysUntil = Math.round((next.getTime() - now.getTime()) / (1000 * 60 * 60 * 24))
-  const monthsUntil = Math.round(daysUntil / 30)
+
+  const nextDateStr = next.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })
 
   if (daysUntil < 0) {
-    const overdueDays = Math.abs(daysUntil)
-    const overdueMonths = Math.round(overdueDays / 30)
     return {
-      label: overdueMonths > 1 ? `Overdue ${overdueMonths}mo` : `Overdue ${overdueDays}d`,
+      label: `Overdue — schedule now`,
       color: "text-red-400",
       bg: "bg-red-400/10 border border-red-400/20",
       urgent: true,
@@ -604,34 +603,24 @@ function getNextTestInfo(status: BiomarkerStatus, lastDate: string): {
 
   if (daysUntil <= 14) {
     return {
-      label: `Due in ${daysUntil}d`,
+      label: `Due soon — ${nextDateStr}`,
       color: "text-amber-400",
       bg: "bg-amber-400/10 border border-amber-400/20",
       urgent: true,
     }
   }
 
-  if (daysUntil <= 30) {
+  if (daysUntil <= 45) {
     return {
-      label: `Due in ~${daysUntil}d`,
+      label: `Schedule by ${nextDateStr}`,
       color: "text-amber-400",
       bg: "bg-amber-400/10 border border-amber-400/20",
       urgent: false,
     }
   }
 
-  if (monthsUntil <= 2) {
-    return {
-      label: `Due in ~${daysUntil}d`,
-      color: "text-yellow-400",
-      bg: "bg-yellow-400/10 border border-yellow-400/20",
-      urgent: false,
-    }
-  }
-
-  const nextMonth = next.toLocaleString("default", { month: "short", year: "2-digit" })
   return {
-    label: `Next: ${nextMonth}`,
+    label: `Next routine lab — ${nextDateStr}`,
     color: "text-emerald-400",
     bg: "bg-emerald-400/10 border border-emerald-400/20",
     urgent: false,
