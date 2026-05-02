@@ -234,8 +234,6 @@ export function HealthIntelligence() {
 
   return (
     <section className="px-4 py-4 lg:px-6">
-
-      {/* Primary Insight */}
       <div
         className="mb-5"
         style={{
@@ -261,7 +259,6 @@ export function HealthIntelligence() {
         </p>
       </div>
 
-      {/* Primary Action Button */}
       <button
         onClick={() => {}}
         style={{
@@ -305,7 +302,6 @@ export function HealthIntelligence() {
         </svg>
       </button>
 
-      {/* Next Step */}
       {nextBestStep && (
         <div
           className="mb-5"
@@ -324,7 +320,6 @@ export function HealthIntelligence() {
         </div>
       )}
 
-      {/* Labs CTA */}
       <button
         onClick={() => navigateToLabs()}
         className="w-full sm:w-auto flex items-center justify-center sm:justify-start gap-2 px-4 py-3 sm:px-0 sm:py-0 rounded-xl sm:rounded-none bg-primary/5 sm:bg-transparent border border-primary/10 sm:border-0 text-sm text-primary hover:bg-primary/10 sm:hover:bg-transparent sm:hover:underline font-medium transition-colors"
