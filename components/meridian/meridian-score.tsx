@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import { cn } from "@/lib/utils"
 
 interface MeridianScoreProps {
@@ -11,11 +11,11 @@ interface MeridianScoreProps {
 }
 
 const contributingFactors = [
-  { name: "Sleep", score: 75, explanation: "Sleep score hit 75 — REM was short due to late screen time" },
-  { name: "Recovery/HRV", score: 45, explanation: "HRV at 19ms indicates nervous system is under load" },
-  { name: "Activity", score: 60, explanation: "Activity balanced but intensity was high for luteal phase" },
-  { name: "Labs", score: 72, explanation: "TSH elevated at 3.03 — thyroid needs support this season" },
-  { name: "Method", score: 50, explanation: "PM stack missed 3 nights this week affecting sleep quality" },
+  { name: "Sleep", score: 75, explanation: "Sleep score 75 — deep sleep still below target, REM was cut short" },
+  { name: "Recovery/HRV", score: 45, explanation: "HRV 19ms — 21% below your 24ms baseline, nervous system under load" },
+  { name: "Activity", score: 60, explanation: "Movement balanced but intensity too high for luteal phase day 18" },
+  { name: "Labs", score: 72, explanation: "TSH 3.03 elevated vs ideal <2.5 — thyroid conversion suboptimal" },
+  { name: "Method", score: 50, explanation: "PM stack missed 3 nights — directly affecting HRV and deep sleep" },
 ]
 
 export function MeridianScore({
@@ -24,41 +24,44 @@ export function MeridianScore({
   load = "Manage",
   nextStep = "Walk + protein"
 }: MeridianScoreProps) {
-  const [animatedScore, setAnimatedScore] = useState(0)
-  const [isVisible, setIsVisible] = useState(false)
+  const [animatedScore, setAnimatedScore] = useState(score) // Start at target, not 0
+  const [displayScore, setDisplayScore] = useState(0) // Visual counter starts at 0
   const [isExpanded, setIsExpanded] = useState(false)
+  const [hasAnimated, setHasAnimated] = useState(false)
+  const animationRef = useRef<number | null>(null)
 
   useEffect(() => {
-    const timer = setTimeout(() => setIsVisible(true), 100)
-    return () => clearTimeout(timer)
-  }, [])
+    // Small delay to ensure component is mounted and visible
+    const delay = setTimeout(() => {
+      if (hasAnimated) return
+      setHasAnimated(true)
 
-  useEffect(() => {
-    if (!isVisible) return
-    
-    const duration = 1500
-    const start = performance.now()
-    
-    const animate = (currentTime: number) => {
-      const elapsed = currentTime - start
-      const progress = Math.min(elapsed / duration, 1)
-      const eased = 1 - Math.pow(1 - progress, 3)
-      setAnimatedScore(Math.round(score * eased))
-      
-      if (progress < 1) {
-        requestAnimationFrame(animate)
+      const duration = 1600
+      const startTime = Date.now()
+      const startValue = 0
+      const endValue = score
+
+      const tick = () => {
+        const elapsed = Date.now() - startTime
+        const progress = Math.min(elapsed / duration, 1)
+        // Ease out cubic
+        const eased = 1 - Math.pow(1 - progress, 3)
+        const current = Math.round(startValue + (endValue - startValue) * eased)
+        setDisplayScore(current)
+
+        if (progress < 1) {
+          animationRef.current = requestAnimationFrame(tick)
+        }
       }
-    }
-    
-    requestAnimationFrame(animate)
-  }, [score, isVisible])
 
-  const getScoreColor = (s: number) => {
-    if (s >= 80) return "text-chart-2"
-    if (s >= 60) return "text-accent"
-    if (s >= 40) return "text-chart-3"
-    return "text-chart-4"
-  }
+      animationRef.current = requestAnimationFrame(tick)
+    }, 300)
+
+    return () => {
+      clearTimeout(delay)
+      if (animationRef.current) cancelAnimationFrame(animationRef.current)
+    }
+  }, [score, hasAnimated])
 
   const getStatusLabel = (s: number) => {
     if (s >= 80) return "Optimal"
@@ -75,7 +78,8 @@ export function MeridianScore({
   }
 
   const circumference = 2 * Math.PI * 45
-  const strokeDashoffset = circumference - (animatedScore / 100) * circumference
+  // Use displayScore for the ring animation
+  const strokeDashoffset = circumference - (displayScore / 100) * circumference
 
   return (
     <section className="px-4 py-4 lg:px-6">
@@ -88,24 +92,18 @@ export function MeridianScore({
           backdropFilter: 'blur(24px)',
           WebkitBackdropFilter: 'blur(24px)',
           boxShadow: '0 8px 40px rgba(0,0,0,0.25)',
-          transition: 'all 0.38s cubic-bezier(.22,1,.36,1)',
+          transition: 'border-color 0.38s cubic-bezier(.22,1,.36,1)',
           borderRadius: '24px',
         }}
       >
         <div className="flex flex-col lg:flex-row lg:items-center gap-6">
-          {/* Score Circle */}
+          {/* Score Ring */}
           <div className="flex flex-col items-center">
-            <div className="text-xs font-semibold text-muted-foreground uppercase tracking-widest mb-4">
+            <div style={{ fontSize: '11px', fontWeight: 700, color: '#9ACBC1', textTransform: 'uppercase', letterSpacing: '0.09em', marginBottom: '16px' }}>
               Meridian Score
             </div>
             <div className="relative w-32 h-32">
               <svg className="w-full h-full -rotate-90" viewBox="0 0 100 100">
-                {/* Background circle */}
-                <circle
-                  cx="50" cy="50" r="45" fill="none"
-                  stroke="rgba(232,248,245,0.07)" strokeWidth="6"
-                />
-                {/* Progress circle — always teal gradient */}
                 <defs>
                   <linearGradient id="scoreGrad" x1="0%" y1="0%" x2="100%" y2="0%">
                     <stop offset="0%" stopColor="#2DD4BF" />
@@ -114,57 +112,65 @@ export function MeridianScore({
                 </defs>
                 <circle
                   cx="50" cy="50" r="45" fill="none"
+                  stroke="rgba(232,248,245,0.07)" strokeWidth="6"
+                />
+                <circle
+                  cx="50" cy="50" r="45" fill="none"
                   stroke="url(#scoreGrad)" strokeWidth="6"
                   strokeLinecap="round"
                   style={{
                     strokeDasharray: circumference,
                     strokeDashoffset: strokeDashoffset,
-                    transition: 'stroke-dashoffset 1.6s cubic-bezier(.22,1,.36,1)',
+                    transition: 'stroke-dashoffset 0.05s linear',
                   }}
                 />
               </svg>
               <div className="absolute inset-0 flex flex-col items-center justify-center">
-                <span
-                  style={{ fontFamily: "'Fraunces', serif", fontSize: '54px', fontWeight: 700, lineHeight: 0.9, color: '#67E8F9' }}
-                >
-                  {animatedScore}
+                <span style={{
+                  fontFamily: "'Fraunces', serif",
+                  fontSize: '54px',
+                  fontWeight: 700,
+                  lineHeight: 0.9,
+                  color: '#67E8F9'
+                }}>
+                  {displayScore}
                 </span>
-                <span className="text-xs mt-1" style={{ color: '#9ACBC1' }}>{getStatusLabel(animatedScore)}</span>
+                <span style={{ fontSize: '12px', color: '#9ACBC1', marginTop: '6px' }}>
+                  {getStatusLabel(displayScore)}
+                </span>
               </div>
             </div>
-            <p className="text-xs text-center text-muted-foreground mt-4 max-w-[180px] leading-relaxed">
-              A combined read of readiness, sleep, activity, labs, body composition, and method adherence.
+            <p style={{ fontSize: '12px', color: '#9ACBC1', textAlign: 'center', marginTop: '12px', maxWidth: '180px', lineHeight: 1.5 }}>
+              Tap to see what's driving your score today.
             </p>
           </div>
 
           {/* Stats Grid */}
           <div className="flex-1 grid grid-cols-3 gap-3">
             <div className="p-4 rounded-xl bg-secondary/50 border border-border/30 text-center">
-              <span className="text-[11px] font-semibold text-muted-foreground uppercase tracking-widest block mb-1">Recovery</span>
+              <span style={{ fontSize: '11px', fontWeight: 700, color: '#9ACBC1', textTransform: 'uppercase', letterSpacing: '0.08em', display: 'block', marginBottom: '6px' }}>Recovery</span>
               <span className="text-sm font-semibold text-accent">{recovery}</span>
             </div>
             <div className="p-4 rounded-xl bg-secondary/50 border border-border/30 text-center">
-              <span className="text-[11px] font-semibold text-muted-foreground uppercase tracking-widest block mb-1">Load</span>
+              <span style={{ fontSize: '11px', fontWeight: 700, color: '#9ACBC1', textTransform: 'uppercase', letterSpacing: '0.08em', display: 'block', marginBottom: '6px' }}>Load</span>
               <span className="text-sm font-semibold text-chart-3">{load}</span>
             </div>
             <div className="p-4 rounded-xl bg-secondary/50 border border-border/30 text-center">
-              <span className="text-[11px] font-semibold text-muted-foreground uppercase tracking-widest block mb-1">Next Step</span>
+              <span style={{ fontSize: '11px', fontWeight: 700, color: '#9ACBC1', textTransform: 'uppercase', letterSpacing: '0.08em', display: 'block', marginBottom: '6px' }}>Next Step</span>
               <span className="text-sm font-semibold text-primary">{nextStep}</span>
             </div>
           </div>
         </div>
 
-        {/* Contributing Factors - Expandable */}
-        <div 
-          style={{
-            overflow: 'hidden',
-            maxHeight: isExpanded ? '400px' : '0px',
-            opacity: isExpanded ? 1 : 0,
-            transition: 'max-height 0.38s cubic-bezier(.22,1,.36,1), opacity 0.38s cubic-bezier(.22,1,.36,1)',
-            marginTop: isExpanded ? '24px' : '0px'
-          }}
-        >
-          <div className="text-xs font-semibold text-muted-foreground uppercase tracking-widest mb-4">
+        {/* Contributing Factors — Expandable */}
+        <div style={{
+          overflow: 'hidden',
+          maxHeight: isExpanded ? '500px' : '0px',
+          opacity: isExpanded ? 1 : 0,
+          transition: 'max-height 0.38s cubic-bezier(.22,1,.36,1), opacity 0.3s ease',
+          marginTop: isExpanded ? '24px' : '0px'
+        }}>
+          <div style={{ fontSize: '11px', fontWeight: 700, color: '#9ACBC1', textTransform: 'uppercase', letterSpacing: '0.09em', marginBottom: '16px' }}>
             Contributing Factors
           </div>
           <div className="flex flex-col gap-4">
@@ -172,45 +178,43 @@ export function MeridianScore({
               <div key={factor.name} className="flex flex-col gap-1">
                 <div className="flex items-center gap-4">
                   <div className="w-24 flex-shrink-0">
-                    <span className="text-xs font-medium text-foreground">{factor.name}</span>
+                    <span style={{ fontSize: '13px', fontWeight: 600, color: '#EAFBF7' }}>{factor.name}</span>
                   </div>
                   <div className="flex-1 flex items-center gap-3">
                     <div className="flex-1 h-2 rounded-full bg-secondary overflow-hidden">
-                      <div 
+                      <div
                         className={cn("h-full rounded-full", getFactorBarColor(factor.score))}
-                        style={{ 
-                          width: `${factor.score}%`,
-                          transition: 'width 0.38s cubic-bezier(.22,1,.36,1)'
-                        }}
+                        style={{ width: isExpanded ? `${factor.score}%` : '0%', transition: 'width 0.7s cubic-bezier(.22,1,.36,1) 0.1s' }}
                       />
                     </div>
-                    <span className="w-8 text-xs font-semibold text-muted-foreground tabular-nums">{factor.score}</span>
+                    <span style={{ width: '28px', fontSize: '13px', fontWeight: 700, color: '#9ACBC1' }}>{factor.score}</span>
                   </div>
                 </div>
                 <div className="pl-28">
-                  <span className="text-[13px] text-muted-foreground leading-relaxed">{factor.explanation}</span>
+                  <span style={{ fontSize: '13px', color: '#9ACBC1', lineHeight: 1.5 }}>{factor.explanation}</span>
                 </div>
               </div>
             ))}
           </div>
         </div>
 
-        {/* Insight */}
-        <div className="mt-6" style={{
+        {/* Insight block */}
+        <div style={{
+          marginTop: '20px',
           background: 'rgba(45,212,191,0.07)',
           border: '1px solid rgba(45,212,191,0.22)',
           borderLeft: '4px solid #2DD4BF',
-          borderRadius: '16px',
-          padding: '16px 20px',
+          borderRadius: '14px',
+          padding: '16px 18px',
         }}>
           <div className="flex items-start gap-3">
-            <div className="flex-shrink-0 w-7 h-7 rounded-lg flex items-center justify-center" style={{ background: 'rgba(45,212,191,0.12)' }}>
-              <span style={{ color: '#2DD4BF', fontSize: '14px' }}>✦</span>
+            <div style={{ flexShrink: 0, width: '28px', height: '28px', borderRadius: '8px', background: 'rgba(45,212,191,0.12)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <span style={{ color: '#2DD4BF', fontSize: '13px' }}>✦</span>
             </div>
             <div>
-              <span style={{ fontSize: '10px', fontWeight: 800, color: '#2DD4BF', textTransform: 'uppercase', letterSpacing: '0.09em' }}>Meridian Insight</span>
-              <p className="text-sm mt-1 leading-relaxed" style={{ color: '#EAFBF7' }}>
-                Your recovery is moderate. Today your body needs light movement, enough protein, and a consistent night more than high intensity.
+              <span style={{ fontSize: '11px', fontWeight: 800, color: '#2DD4BF', textTransform: 'uppercase', letterSpacing: '0.09em' }}>Meridian Insight</span>
+              <p style={{ fontSize: '15px', lineHeight: 1.6, color: '#EAFBF7', marginTop: '6px', fontWeight: 500 }}>
+                TSH elevated + HRV low = nervous system under load. Walk 20 min, hit protein, complete your PM stack tonight.
               </p>
             </div>
           </div>
