@@ -96,7 +96,7 @@ function DashboardContent() {
             <HealthIntelligence />
             
             {/* 3. Supporting Context - Clearly secondary (80% decision / 20% context) */}
-            <div className="opacity-75">
+            <div style={{ opacity: 0.85 }}>
               <MeridianScore 
                 score={62} 
                 recovery="Moderate" 
