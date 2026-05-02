@@ -569,6 +569,75 @@ function ImprovedRangeBar({
   )
 }
 
+// ── SMART FREQUENCY LOGIC ─────────────────────────────────────────
+function getNextTestInfo(status: BiomarkerStatus, lastDate: string): {
+  label: string
+  color: string
+  bg: string
+  urgent: boolean
+} {
+  const monthsMap: Record<BiomarkerStatus, number> = {
+    optimal: 12,
+    watch: 6,
+    attention: 3,
+    "out-of-range": 2,
+  }
+
+  const months = monthsMap[status]
+  const last = new Date(lastDate)
+  const next = new Date(last)
+  next.setMonth(next.getMonth() + months)
+  const now = new Date()
+  const daysUntil = Math.round((next.getTime() - now.getTime()) / (1000 * 60 * 60 * 24))
+  const monthsUntil = Math.round(daysUntil / 30)
+
+  if (daysUntil < 0) {
+    const overdueDays = Math.abs(daysUntil)
+    const overdueMonths = Math.round(overdueDays / 30)
+    return {
+      label: overdueMonths > 1 ? `Overdue ${overdueMonths}mo` : `Overdue ${overdueDays}d`,
+      color: "text-red-400",
+      bg: "bg-red-400/10 border border-red-400/20",
+      urgent: true,
+    }
+  }
+
+  if (daysUntil <= 14) {
+    return {
+      label: `Due in ${daysUntil}d`,
+      color: "text-amber-400",
+      bg: "bg-amber-400/10 border border-amber-400/20",
+      urgent: true,
+    }
+  }
+
+  if (daysUntil <= 30) {
+    return {
+      label: `Due in ~${daysUntil}d`,
+      color: "text-amber-400",
+      bg: "bg-amber-400/10 border border-amber-400/20",
+      urgent: false,
+    }
+  }
+
+  if (monthsUntil <= 2) {
+    return {
+      label: `Due in ~${daysUntil}d`,
+      color: "text-yellow-400",
+      bg: "bg-yellow-400/10 border border-yellow-400/20",
+      urgent: false,
+    }
+  }
+
+  const nextMonth = next.toLocaleString("default", { month: "short", year: "2-digit" })
+  return {
+    label: `Next: ${nextMonth}`,
+    color: "text-emerald-400",
+    bg: "bg-emerald-400/10 border border-emerald-400/20",
+    urgent: false,
+  }
+}
+
 const BiomarkerCard = ({ 
   biomarker, 
   onClick,
@@ -586,8 +655,7 @@ const BiomarkerCard = ({
   const trend = getTrendDirection(biomarker.value, biomarker.previousValue)
   const config = statusConfig[status]
   const catConfig = categoryConfig[biomarker.category]
-
-  // Determine if improved or declined
+  const nextTest = getNextTestInfo(status, biomarker.date)
   const trendText = biomarker.previousValue ? (
     trend === "up" && (biomarker.id === "hdl" || biomarker.id === "vitamin-d" || biomarker.id === "b12") 
       ? `Up from ${biomarker.previousValue}`
@@ -635,6 +703,12 @@ const BiomarkerCard = ({
               <SourceBadge source={biomarker.source} />
             </div>
             <p className="text-xs text-muted-foreground">{biomarker.date}</p>
+            <span className={cn("text-[10px] font-700 px-2 py-0.5 rounded-full mt-1 inline-flex items-center gap-1", nextTest.bg, nextTest.color)}>
+              {nextTest.urgent && (
+                <span style={{ width: "5px", height: "5px", borderRadius: "50%", background: "currentColor", display: "inline-block", flexShrink: 0 }} />
+              )}
+              {nextTest.label}
+            </span>
           </div>
           <div className={cn("px-2 py-1 rounded-md text-xs font-medium", config.bgColor, config.color)}>
             {config.label}
