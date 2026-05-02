@@ -349,6 +349,33 @@ export function HealthIntelligence() {
         </p>
       )}
 
+      {/* Primary Insight — decision-level intelligence */}
+      <div className="mb-5" style={{
+        background: 'rgba(45,212,191,0.07)',
+        border: '1px solid rgba(45,212,191,0.22)',
+        borderLeft: '4px solid #2DD4BF',
+        borderRadius: '16px',
+        padding: '20px 22px',
+      }}>
+        {/* Line 1 — What is happening */}
+        <p className="text-sm leading-relaxed mb-3" style={{ color: '#EAFBF7', fontWeight: 600 }}>
+          Your TSH is elevated and your HRV is suppressed this week — your nervous system is under load.
+        </p>
+        {/* Line 2 — What to do */}
+        <p className="text-sm leading-relaxed mb-3" style={{ color: '#EAFBF7', fontWeight: 600 }}>
+          <span style={{ fontWeight: 800, color: '#2DD4BF' }}>Today: </span>
+          Walk 20 minutes and prioritize protein at breakfast.
+        </p>
+        {/* Line 3 — What to avoid */}
+        <p className="text-sm leading-relaxed mb-4" style={{ color: '#9ACBC1', fontWeight: 600 }}>
+          Avoid high intensity — your current state will likely extend recovery into the next 48 hours.
+        </p>
+        {/* Trust line */}
+        <p style={{ fontSize: '11px', fontWeight: 600, color: '#5F8E85', borderTop: '1px solid rgba(103,232,249,0.10)', paddingTop: '12px' }}>
+          Derived from your thyroid labs + Oura wearable data · Meridian interprets, you decide.
+        </p>
+      </div>
+
       {/* Next Step */}
       {nextBestStep && (
         <div className="mb-5" style={{

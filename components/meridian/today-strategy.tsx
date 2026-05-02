@@ -76,21 +76,21 @@ export function TodayStrategy() {
           status="fair"
           label="Sleep"
           value="7h 9m"
-          sublabel="Score 75 · recovery foundation"
+          sublabel="Recovery signal: score 75 — deep sleep still needs improvement"
         />
         <MetricCard
           icon={<Heart className="w-5 h-5" />}
           status="low"
           label="HRV"
           value="19 ms"
-          sublabel="System loaded · avoid max effort"
+          sublabel="Suppressed: 21% below your 24ms baseline — recovery is limited today"
         />
         <MetricCard
           icon={<Footprints className="w-5 h-5" />}
           status="good"
           label="Steps"
           value="4,920"
-          sublabel="Goal: 7,000 · NEAT lever"
+          sublabel="Recovery target: 70% reached — a 20 min walk completes the day"
           detail="70% complete"
         />
         <MetricCard
@@ -98,7 +98,7 @@ export function TodayStrategy() {
           status="charged"
           label="Body Battery"
           value="64"
-          sublabel="Usable energy · pace wisely"
+          sublabel="Usable — but declining faster due to systemic load"
         />
         <MetricCard
           icon={<FlaskConical className="w-5 h-5" />}
