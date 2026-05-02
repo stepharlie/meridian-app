@@ -140,15 +140,15 @@ export function MeridianScore({
           {/* Stats Grid */}
           <div className="flex-1 grid grid-cols-3 gap-3">
             <div className="p-4 rounded-xl bg-secondary/50 border border-border/30 text-center">
-              <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-widest block mb-1">Recovery</span>
+              <span className="text-[11px] font-semibold text-muted-foreground uppercase tracking-widest block mb-1">Recovery</span>
               <span className="text-sm font-semibold text-accent">{recovery}</span>
             </div>
             <div className="p-4 rounded-xl bg-secondary/50 border border-border/30 text-center">
-              <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-widest block mb-1">Load</span>
+              <span className="text-[11px] font-semibold text-muted-foreground uppercase tracking-widest block mb-1">Load</span>
               <span className="text-sm font-semibold text-chart-3">{load}</span>
             </div>
             <div className="p-4 rounded-xl bg-secondary/50 border border-border/30 text-center">
-              <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-widest block mb-1">Next Step</span>
+              <span className="text-[11px] font-semibold text-muted-foreground uppercase tracking-widest block mb-1">Next Step</span>
               <span className="text-sm font-semibold text-primary">{nextStep}</span>
             </div>
           </div>
@@ -188,7 +188,7 @@ export function MeridianScore({
                   </div>
                 </div>
                 <div className="pl-28">
-                  <span className="text-[11px] text-muted-foreground leading-tight">{factor.explanation}</span>
+                  <span className="text-[13px] text-muted-foreground leading-relaxed">{factor.explanation}</span>
                 </div>
               </div>
             ))}

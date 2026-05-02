@@ -141,9 +141,9 @@ export function ActivityPage() {
             </span>
             <div className="flex items-center gap-1 mt-1">
               <span className={cn("text-xs font-bold", m.trendColor)}>{m.trend}</span>
-              <span className="text-[10px]" style={{ color: '#5F8E85' }}>{m.trendLabel}</span>
+              <span className="text-[11px]" style={{ color: '#5F8E85' }}>{m.trendLabel}</span>
             </div>
-            <p className="text-[10px] mt-1" style={{ color: '#5F8E85' }}>{m.sub}</p>
+            <p className="text-[11px] mt-1" style={{ color: '#5F8E85' }}>{m.sub}</p>
             <div className="mt-2 h-1 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.06)' }}>
               <div
                 className={cn("h-full rounded-full transition-all duration-700", m.color.replace("text-", "bg-"))}
@@ -197,7 +197,7 @@ export function ActivityPage() {
             <Zap className="w-4 h-4" style={{ color: '#FCD34D' }} />
             <h2 className="text-xs font-bold uppercase tracking-wider" style={{ color: '#9ACBC1' }}>Muscle Load — 4 Weeks</h2>
           </div>
-          <span className="text-[10px]" style={{ color: '#5F8E85' }}>16 sessions</span>
+          <span className="text-[11px]" style={{ color: '#5F8E85' }}>16 sessions</span>
         </div>
         <div style={cardStyle} className="p-4 space-y-4">
           {muscleGroups.map((mg) => (
@@ -217,7 +217,7 @@ export function ActivityPage() {
               </div>
             </div>
           ))}
-          <p className="text-[10px] pt-2" style={{ color: '#5F8E85', borderTop: '1px solid rgba(103,232,249,0.10)' }}>
+          <p className="text-[11px] pt-2" style={{ color: '#5F8E85', borderTop: '1px solid rgba(103,232,249,0.10)' }}>
             Based on exercise type, duration, and HR from Garmin sessions
           </p>
         </div>
@@ -243,7 +243,7 @@ export function ActivityPage() {
             }}>
               <p className="text-xs mb-1" style={{ color: '#9ACBC1' }}>{label}</p>
               <span className="text-2xl font-bold" style={{ fontFamily: "'Fraunces', serif", color }}>{val}</span>
-              <p className="text-[10px] mt-1" style={{ color: '#5F8E85' }}>{sub}</p>
+              <p className="text-[11px] mt-1" style={{ color: '#5F8E85' }}>{sub}</p>
             </div>
           ))}
         </div>
@@ -257,7 +257,7 @@ export function ActivityPage() {
           </div>
           <div>
             <div style={{ fontSize: '10px', fontWeight: 800, color: '#2DD4BF', textTransform: 'uppercase', letterSpacing: '0.09em', marginBottom: '6px' }}>Meridian Insight</div>
-            <p className="text-xs leading-relaxed" style={{ color: '#EAFBF7' }}>
+            <p className="text-[13px] leading-relaxed" style={{ color: "#EAFBF7" }}>
               Your glutes and hamstrings are highly loaded — rest or pivot to chest and arms today.
               At 15 intensity minutes this week vs a goal of 75, adding two 20-minute zone 2 sessions
               (fast walk or bike) would be the single highest-impact change for your HDL, VO2 Max, and Fitness Age.

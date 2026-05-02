@@ -163,7 +163,7 @@ export function ProfilePage() {
                 )} />
               </div>
               <h3 className="text-xs font-semibold text-foreground">{achievement.name}</h3>
-              <p className="text-[10px] text-muted-foreground mt-0.5">{achievement.description}</p>
+              <p className="text-[11px] text-muted-foreground mt-0.5">{achievement.description}</p>
             </div>
           ))}
         </div>

@@ -93,7 +93,7 @@ export function TodayFlow() {
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 mb-1">
                       <span className={cn(
-                        "text-[10px] font-bold uppercase tracking-wider",
+                        "text-[11px] font-bold uppercase tracking-wider",
                         step.completed ? "text-chart-2" : step.active ? "text-primary" : "text-muted-foreground"
                       )}>
                         {step.label}
@@ -106,7 +106,7 @@ export function TodayFlow() {
                       "overflow-hidden transition-all duration-300",
                       expandedStep === step.id ? "max-h-24 opacity-100" : "max-h-0 opacity-0"
                     )}>
-                      <p className="text-xs text-muted-foreground leading-relaxed pt-1 text-pretty">
+                      <p className="text-[13px] text-muted-foreground leading-relaxed pt-1 text-pretty">
                         {step.description}
                       </p>
                     </div>

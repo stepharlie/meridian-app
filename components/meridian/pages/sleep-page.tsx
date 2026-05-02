@@ -95,7 +95,7 @@ export function SleepPage() {
           <div className="flex items-end justify-between gap-1.5 h-28 mb-3">
             {weeklyScores.map((score, idx) => (
               <div key={idx} className="flex-1 flex flex-col items-center gap-1">
-                <span className="text-[10px] tabular-nums" style={{ color: '#5F8E85' }}>{score}</span>
+                <span className="text-[11px] tabular-nums" style={{ color: '#5F8E85' }}>{score}</span>
                 <div
                   className="w-full rounded-t-sm transition-all duration-500"
                   style={{
@@ -107,7 +107,7 @@ export function SleepPage() {
               </div>
             ))}
           </div>
-          <div className="flex justify-between text-[10px]" style={{ color: '#5F8E85' }}>
+          <div className="flex justify-between text-[11px]" style={{ color: '#5F8E85' }}>
             <span>12 days ago</span><span>Today</span>
           </div>
           <div className="flex items-center gap-4 mt-3 pt-3" style={{ borderTop: '1px solid rgba(103,232,249,0.10)' }}>
@@ -158,7 +158,7 @@ export function SleepPage() {
           </div>
           <div>
             <div style={{ fontSize: '10px', fontWeight: 800, color: '#2DD4BF', textTransform: 'uppercase', letterSpacing: '0.09em', marginBottom: '6px' }}>Meridian Insight</div>
-            <p className="text-xs leading-relaxed" style={{ color: '#EAFBF7' }}>
+            <p className="text-[13px] leading-relaxed" style={{ color: "#EAFBF7" }}>
               Your HRV of 19ms is low, and REM was cut short at 1h 51m — likely due to elevated TSH impacting sleep architecture.
               Deep sleep hit target at 1h 31m, but overall recovery is compromised. Prioritize your PM stack tonight
               (magnesium, L-Theanine) and aim for lights out by 10pm to support thyroid and nervous system recovery.

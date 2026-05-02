@@ -629,7 +629,7 @@ const BiomarkerCard = ({
           <div>
             <div className="flex items-center gap-2 mb-1">
               <h3 className="text-sm font-semibold text-foreground">{biomarker.name}</h3>
-              <span className={cn("text-[10px] font-medium px-1.5 py-0.5 rounded", catConfig.bgColor, catConfig.color)}>
+              <span className={cn("text-[11px] font-medium px-1.5 py-0.5 rounded", catConfig.bgColor, catConfig.color)}>
                 {catConfig.label}
               </span>
               <SourceBadge source={biomarker.source} />
@@ -1814,23 +1814,23 @@ export function LabsPage() {
           {/* Stats Grid - Stack on mobile */}
           <div className="flex-1 grid grid-cols-1 sm:grid-cols-5 gap-3">
             <div className="p-4 rounded-xl bg-secondary/50 border border-border/30 text-center">
-              <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-widest block mb-1">Last Lab</span>
+              <span className="text-[11px] font-semibold text-muted-foreground uppercase tracking-widest block mb-1">Last Lab</span>
               <span className="text-sm font-semibold text-foreground">{latestLabDate}</span>
             </div>
             <div className="p-4 rounded-xl bg-secondary/50 border border-border/30 text-center">
-              <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-widest block mb-1">Reviewed</span>
+              <span className="text-[11px] font-semibold text-muted-foreground uppercase tracking-widest block mb-1">Reviewed</span>
               <span className="text-sm font-semibold text-primary">{biomarkers.length} markers</span>
             </div>
             <div className="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-center">
-              <span className="text-[10px] font-semibold text-emerald-400/80 uppercase tracking-widest block mb-1">Optimal</span>
+              <span className="text-[11px] font-semibold text-emerald-400/80 uppercase tracking-widest block mb-1">Optimal</span>
               <span className="text-sm font-semibold text-emerald-400">{statusCounts.optimal}</span>
             </div>
             <div className="p-4 rounded-xl bg-amber-500/10 border border-amber-500/20 text-center">
-              <span className="text-[10px] font-semibold text-amber-400/80 uppercase tracking-widest block mb-1">Watch</span>
+              <span className="text-[11px] font-semibold text-amber-400/80 uppercase tracking-widest block mb-1">Watch</span>
               <span className="text-sm font-semibold text-amber-400">{statusCounts.watch}</span>
             </div>
             <div className="p-4 rounded-xl bg-orange-500/10 border border-orange-500/20 text-center">
-              <span className="text-[10px] font-semibold text-orange-400/80 uppercase tracking-widest block mb-1">Attention</span>
+              <span className="text-[11px] font-semibold text-orange-400/80 uppercase tracking-widest block mb-1">Attention</span>
               <span className="text-sm font-semibold text-orange-400">{statusCounts.attention + statusCounts["out-of-range"]}</span>
             </div>
           </div>

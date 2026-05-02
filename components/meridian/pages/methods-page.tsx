@@ -152,15 +152,15 @@ export function MethodsPage() {
       <div className="grid grid-cols-3 gap-3">
         <div className="p-3 rounded-xl bg-card border border-border/50 text-center">
           <p className="text-lg font-semibold text-foreground tabular-nums">{weeklyProgress.percentage}%</p>
-          <p className="text-[10px] text-muted-foreground uppercase">Weekly</p>
+          <p className="text-[11px] text-muted-foreground uppercase">Weekly</p>
         </div>
         <div className="p-3 rounded-xl bg-card border border-border/50 text-center">
           <p className="text-lg font-semibold text-foreground tabular-nums">21</p>
-          <p className="text-[10px] text-muted-foreground uppercase">Best Streak</p>
+          <p className="text-[11px] text-muted-foreground uppercase">Best Streak</p>
         </div>
         <div className="p-3 rounded-xl bg-card border border-border/50 text-center">
           <p className="text-lg font-semibold text-foreground tabular-nums">5</p>
-          <p className="text-[10px] text-muted-foreground uppercase">Active</p>
+          <p className="text-[11px] text-muted-foreground uppercase">Active</p>
         </div>
       </div>
 

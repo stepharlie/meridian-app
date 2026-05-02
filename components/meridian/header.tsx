@@ -242,7 +242,7 @@ export function MeridianHeader() {
 
             {/* Main Navigation */}
             <div className="mb-6">
-              <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-widest mb-2 block">
+              <span className="text-[11px] font-semibold text-muted-foreground uppercase tracking-widest mb-2 block">
                 MAIN
               </span>
               <div className="space-y-1">
@@ -270,7 +270,7 @@ export function MeridianHeader() {
             {/* Additional Sections */}
             {sidebarSections.map((section) => (
               <div key={section.label} className="mb-6">
-                <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-widest mb-2 block">
+                <span className="text-[11px] font-semibold text-muted-foreground uppercase tracking-widest mb-2 block">
                   {section.label}
                 </span>
                 <div className="space-y-1">

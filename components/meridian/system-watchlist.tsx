@@ -113,7 +113,7 @@ export function SystemWatchlist() {
                   </div>
                   <div className="flex-1 min-w-0">
                     <h3 className="text-sm font-semibold text-foreground">{item.title}</h3>
-                    <p className="text-xs text-muted-foreground">{item.subtitle}</p>
+                    <p className="text-[13px] text-muted-foreground">{item.subtitle}</p>
                   </div>
                   <div className={cn("w-2 h-2 rounded-full", config.dot)} />
                 </button>

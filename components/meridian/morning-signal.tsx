@@ -163,7 +163,7 @@ export function MorningSignal({ userName = "Stephanie" }: { userName?: string })
              activeTab === "labs" ? "TSH elevated, thyroid under stress" :
              activeTab === "activity" ? "Luteal phase + low HRV = rest" : "PM stack critical tonight"}
           </p>
-          <p className="text-xs text-muted-foreground leading-relaxed">{content.signal}</p>
+          <p {className="text-[13px] text-muted-foreground leading-relaxed">{content.signal}</p>
         </div>
 
         <div className="group p-4 rounded-xl bg-card border border-border/50 hover:border-accent/40 transition-all duration-200 hover:shadow-lg cursor-pointer">
@@ -176,7 +176,7 @@ export function MorningSignal({ userName = "Stephanie" }: { userName?: string })
              activeTab === "labs" ? "Selenium + iodine support" :
              activeTab === "activity" ? "5K steps max, HR under 110" : "Mag, glycine, selenium by 9pm"}
           </p>
-          <p className="text-xs text-muted-foreground leading-relaxed">{content.lever}</p>
+          <p {className="text-[13px] text-muted-foreground leading-relaxed">{content.lever}</p>
         </div>
 
         <div className="group p-4 rounded-xl bg-card border border-border/50 hover:border-chart-5/40 transition-all duration-200 hover:shadow-lg cursor-pointer">
@@ -189,7 +189,7 @@ export function MorningSignal({ userName = "Stephanie" }: { userName?: string })
              activeTab === "labs" ? "Retest TSH in 6 weeks" :
              activeTab === "activity" ? "Intensity deepens recovery debt" : "Caffeine cutoff 12pm"}
           </p>
-          <p className="text-xs text-muted-foreground leading-relaxed">{content.watch}</p>
+          <p {className="text-[13px] text-muted-foreground leading-relaxed">{content.watch}</p>
         </div>
       </div>
 

@@ -56,7 +56,7 @@ export function BottomNav() {
                 isActive && "scale-110"
               )} />
               <span className={cn(
-                "text-[10px] font-medium relative z-10",
+                "text-[11px] font-medium relative z-10",
                 isActive && "font-semibold"
               )}>{item.label}</span>
               {isActive && (

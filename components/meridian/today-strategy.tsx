@@ -41,16 +41,16 @@ function MetricCard({ icon, status, label, value, sublabel, detail }: MetricCard
           <span className={config.color}>{icon}</span>
         </div>
         <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-2 mb-0.5">
-            <span className={cn("text-[10px] font-bold uppercase tracking-wider", config.color)}>
+          <div className="flex items-center gap-2 mb-1">
+            <span className={cn("text-[11px] font-bold uppercase tracking-wider", config.color)}>
               {status}
             </span>
-            <span className="text-xs text-muted-foreground">{label}</span>
+            <span className="text-xs font-600 text-muted-foreground">{label}</span>
           </div>
           <div className="text-lg font-semibold text-foreground truncate tabular-nums">{value}</div>
-          <div className="text-xs text-muted-foreground leading-relaxed">{sublabel}</div>
+          <div className="text-[13px] text-muted-foreground leading-relaxed mt-0.5">{sublabel}</div>
           {detail && (
-            <div className={cn("text-[10px] mt-1 font-medium", config.color, "opacity-70")}>{detail}</div>
+            <div className={cn("text-[11px] mt-1 font-medium", config.color)}>{detail}</div>
           )}
         </div>
       </div>

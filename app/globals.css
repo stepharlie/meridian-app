@@ -228,7 +228,20 @@ h1, h2, .font-serif, .score-number, .metric-value {
   transition-duration: 150ms;
 }
 
-/* Glassmorphism */
+/* ── ACCESSIBILITY — READABILITY ── */
+/* Minimum readable sizes for health data */
+.text-readable      { font-size: 14px !important; line-height: 1.6; }
+.text-readable-sm   { font-size: 13px !important; line-height: 1.55; }
+.text-label         { font-size: 12px !important; font-weight: 700; letter-spacing: 0.04em; }
+
+/* Upgrade muted text contrast for content (not decorative) */
+.content-muted      { color: #9ACBC1 !important; }  /* was #5F8E85 — +30% contrast */
+
+/* Global minimum — never below 11px anywhere */
+* { min-font-size: 11px; }
+
+/* Improve base body line-height for readability */
+body { line-height: 1.6; }
 .glass {
   background: rgba(232,248,245,0.055);
   border: 1px solid rgba(103,232,249,0.13);
